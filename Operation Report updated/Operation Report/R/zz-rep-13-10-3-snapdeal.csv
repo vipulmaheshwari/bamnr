@@ -1,0 +1,426 @@
+_id.dl_date,_id.dl_pt,_id.dl_cs_ss,_id.dl_cl,dl_count
+32,"COD","Delivered","Snapdeal",7769.0
+32,"COD","In Transit","Snapdeal",5.0
+32,"COD","LOST","Snapdeal",7.0
+32,"COD","Pending","Snapdeal",1.0
+32,"COD","RTO","Snapdeal",1445.0
+32,"COD","Returned","Snapdeal",42.0
+32,"Pre-paid","Delivered","Snapdeal",1955.0
+32,"Pre-paid","In Transit","Snapdeal",1.0
+32,"Pre-paid","RTO","Snapdeal",27.0
+33,"COD","Delivered","Snapdeal",20375.0
+33,"COD","In Transit","Snapdeal",7.0
+33,"COD","LOST","Snapdeal",34.0
+33,"COD","Pending","Snapdeal",2.0
+33,"COD","RTO","Snapdeal",3609.0
+33,"COD","Returned","Snapdeal",102.0
+33,"Pre-paid","Delivered","Snapdeal",5446.0
+33,"Pre-paid","LOST","Snapdeal",6.0
+33,"Pre-paid","Pending","Snapdeal",1.0
+33,"Pre-paid","RTO","Snapdeal",381.0
+33,"Pre-paid","Returned","Snapdeal",17.0
+34,"COD","Delivered","Snapdeal",26794.0
+34,"COD","In Transit","Snapdeal",22.0
+34,"COD","LOST","Snapdeal",37.0
+34,"COD","Pending","Snapdeal",5.0
+34,"COD","RTO","Snapdeal",4658.0
+34,"COD","Returned","Snapdeal",259.0
+34,"Pre-paid","Delivered","Snapdeal",6304.0
+34,"Pre-paid","In Transit","Snapdeal",3.0
+34,"Pre-paid","LOST","Snapdeal",1.0
+34,"Pre-paid","RTO","Snapdeal",170.0
+34,"Pre-paid","Returned","Snapdeal",13.0
+35,"COD","Delivered","Snapdeal",16470.0
+35,"COD","In Transit","Snapdeal",1.0
+35,"COD","LOST","Snapdeal",17.0
+35,"COD","Pending","Snapdeal",1.0
+35,"COD","RTO","Snapdeal",2878.0
+35,"COD","Returned","Snapdeal",205.0
+35,"Pre-paid","Delivered","Snapdeal",3435.0
+35,"Pre-paid","In Transit","Snapdeal",3.0
+35,"Pre-paid","LOST","Snapdeal",4.0
+35,"Pre-paid","Pending","Snapdeal",1.0
+35,"Pre-paid","RTO","Snapdeal",188.0
+35,"Pre-paid","Returned","Snapdeal",19.0
+36,"COD","Delivered","Snapdeal",15843.0
+36,"COD","In Transit","Snapdeal",3.0
+36,"COD","LOST","Snapdeal",32.0
+36,"COD","RTO","Snapdeal",2708.0
+36,"COD","Returned","Snapdeal",146.0
+36,"Pre-paid","Delivered","Snapdeal",2625.0
+36,"Pre-paid","In Transit","Snapdeal",5.0
+36,"Pre-paid","LOST","Snapdeal",2.0
+36,"Pre-paid","RTO","Snapdeal",199.0
+36,"Pre-paid","Returned","Snapdeal",16.0
+37,"COD","Delivered","Snapdeal",13345.0
+37,"COD","In Transit","Snapdeal",5.0
+37,"COD","LOST","Snapdeal",72.0
+37,"COD","RTO","Snapdeal",2511.0
+37,"COD","Returned","Snapdeal",203.0
+37,"Pre-paid","Delivered","Snapdeal",2253.0
+37,"Pre-paid","In Transit","Snapdeal",1.0
+37,"Pre-paid","LOST","Snapdeal",17.0
+37,"Pre-paid","RTO","Snapdeal",107.0
+37,"Pre-paid","Returned","Snapdeal",27.0
+38,"COD","Delivered","Snapdeal",9784.0
+38,"COD","In Transit","Snapdeal",2.0
+38,"COD","LOST","Snapdeal",64.0
+38,"COD","Pending","Snapdeal",1.0
+38,"COD","RTO","Snapdeal",1893.0
+38,"COD","Returned","Snapdeal",162.0
+38,"Pre-paid","Delivered","Snapdeal",1716.0
+38,"Pre-paid","In Transit","Snapdeal",1.0
+38,"Pre-paid","LOST","Snapdeal",14.0
+38,"Pre-paid","RTO","Snapdeal",104.0
+38,"Pre-paid","Returned","Snapdeal",18.0
+39,"COD","Delivered","Snapdeal",4903.0
+39,"COD","LOST","Snapdeal",17.0
+39,"COD","RTO","Snapdeal",1020.0
+39,"COD","Returned","Snapdeal",127.0
+39,"Pre-paid","Delivered","Snapdeal",726.0
+39,"Pre-paid","LOST","Snapdeal",3.0
+39,"Pre-paid","RTO","Snapdeal",29.0
+39,"Pre-paid","Returned","Snapdeal",18.0
+40,"COD","Delivered","Snapdeal",18227.0
+40,"COD","In Transit","Snapdeal",5.0
+40,"COD","LOST","Snapdeal",17.0
+40,"COD","Pending","Snapdeal",1.0
+40,"COD","RTO","Snapdeal",3858.0
+40,"COD","Returned","Snapdeal",146.0
+40,"Pre-paid","Delivered","Snapdeal",3008.0
+40,"Pre-paid","LOST","Snapdeal",2.0
+40,"Pre-paid","RTO","Snapdeal",165.0
+40,"Pre-paid","Returned","Snapdeal",7.0
+41,"COD","Delivered","Snapdeal",15983.0
+41,"COD","In Transit","Snapdeal",1.0
+41,"COD","LOST","Snapdeal",31.0
+41,"COD","Pending","Snapdeal",1.0
+41,"COD","RTO","Snapdeal",3537.0
+41,"COD","Returned","Snapdeal",83.0
+41,"Pre-paid","Delivered","Snapdeal",2513.0
+41,"Pre-paid","LOST","Snapdeal",1.0
+41,"Pre-paid","RTO","Snapdeal",244.0
+41,"Pre-paid","Returned","Snapdeal",7.0
+42,"COD","Delivered","Snapdeal",12347.0
+42,"COD","In Transit","Snapdeal",2.0
+42,"COD","LOST","Snapdeal",32.0
+42,"COD","Pending","Snapdeal",1.0
+42,"COD","RTO","Snapdeal",2369.0
+42,"COD","Returned","Snapdeal",52.0
+42,"Pre-paid","Delivered","Snapdeal",2266.0
+42,"Pre-paid","LOST","Snapdeal",6.0
+42,"Pre-paid","RTO","Snapdeal",129.0
+42,"Pre-paid","Returned","Snapdeal",11.0
+43,"COD","Delivered","Snapdeal",12704.0
+43,"COD","In Transit","Snapdeal",1.0
+43,"COD","LOST","Snapdeal",15.0
+43,"COD","RTO","Snapdeal",2261.0
+43,"COD","Returned","Snapdeal",54.0
+43,"Pre-paid","Delivered","Snapdeal",2207.0
+43,"Pre-paid","In Transit","Snapdeal",1.0
+43,"Pre-paid","LOST","Snapdeal",2.0
+43,"Pre-paid","RTO","Snapdeal",124.0
+43,"Pre-paid","Returned","Snapdeal",6.0
+44,"COD","Delivered","Snapdeal",12070.0
+44,"COD","In Transit","Snapdeal",3.0
+44,"COD","LOST","Snapdeal",16.0
+44,"COD","RTO","Snapdeal",2006.0
+44,"COD","Returned","Snapdeal",53.0
+44,"Pre-paid","Delivered","Snapdeal",2086.0
+44,"Pre-paid","LOST","Snapdeal",3.0
+44,"Pre-paid","RTO","Snapdeal",81.0
+44,"Pre-paid","Returned","Snapdeal",7.0
+45,"COD","Delivered","Snapdeal",9582.0
+45,"COD","In Transit","Snapdeal",3.0
+45,"COD","LOST","Snapdeal",31.0
+45,"COD","RTO","Snapdeal",1523.0
+45,"COD","Returned","Snapdeal",42.0
+45,"Pre-paid","Delivered","Snapdeal",1683.0
+45,"Pre-paid","LOST","Snapdeal",13.0
+45,"Pre-paid","RTO","Snapdeal",54.0
+45,"Pre-paid","Returned","Snapdeal",2.0
+46,"COD","Delivered","Snapdeal",3338.0
+46,"COD","LOST","Snapdeal",8.0
+46,"COD","RTO","Snapdeal",581.0
+46,"COD","Returned","Snapdeal",25.0
+46,"Pre-paid","Delivered","Snapdeal",522.0
+46,"Pre-paid","RTO","Snapdeal",12.0
+46,"Pre-paid","Returned","Snapdeal",2.0
+47,"COD","Delivered","Snapdeal",14627.0
+47,"COD","In Transit","Snapdeal",3.0
+47,"COD","LOST","Snapdeal",23.0
+47,"COD","Pending","Snapdeal",1.0
+47,"COD","RTO","Snapdeal",2339.0
+47,"COD","Returned","Snapdeal",122.0
+47,"Pre-paid","Delivered","Snapdeal",2677.0
+47,"Pre-paid","In Transit","Snapdeal",2.0
+47,"Pre-paid","RTO","Snapdeal",75.0
+47,"Pre-paid","Returned","Snapdeal",3.0
+48,"COD","Delivered","Snapdeal",10377.0
+48,"COD","In Transit","Snapdeal",1.0
+48,"COD","LOST","Snapdeal",51.0
+48,"COD","Pending","Snapdeal",3.0
+48,"COD","RTO","Snapdeal",1657.0
+48,"COD","Returned","Snapdeal",108.0
+48,"Pre-paid","Delivered","Snapdeal",2021.0
+48,"Pre-paid","LOST","Snapdeal",11.0
+48,"Pre-paid","RTO","Snapdeal",91.0
+48,"Pre-paid","Returned","Snapdeal",8.0
+49,"COD","Delivered","Snapdeal",10691.0
+49,"COD","In Transit","Snapdeal",15.0
+49,"COD","LOST","Snapdeal",17.0
+49,"COD","RTO","Snapdeal",1743.0
+49,"COD","Returned","Snapdeal",120.0
+49,"Pre-paid","Delivered","Snapdeal",2186.0
+49,"Pre-paid","In Transit","Snapdeal",1.0
+49,"Pre-paid","LOST","Snapdeal",1.0
+49,"Pre-paid","RTO","Snapdeal",61.0
+49,"Pre-paid","Returned","Snapdeal",18.0
+50,"COD","Delivered","Snapdeal",10186.0
+50,"COD","In Transit","Snapdeal",5.0
+50,"COD","LOST","Snapdeal",18.0
+50,"COD","Pending","Snapdeal",3.0
+50,"COD","RTO","Snapdeal",1573.0
+50,"COD","Returned","Snapdeal",136.0
+50,"Pre-paid","Delivered","Snapdeal",2111.0
+50,"Pre-paid","LOST","Snapdeal",3.0
+50,"Pre-paid","RTO","Snapdeal",93.0
+50,"Pre-paid","Returned","Snapdeal",11.0
+51,"COD","Delivered","Snapdeal",10707.0
+51,"COD","In Transit","Snapdeal",6.0
+51,"COD","LOST","Snapdeal",25.0
+51,"COD","Pending","Snapdeal",8.0
+51,"COD","RTO","Snapdeal",1562.0
+51,"COD","Returned","Snapdeal",128.0
+51,"Pre-paid","Delivered","Snapdeal",2186.0
+51,"Pre-paid","LOST","Snapdeal",7.0
+51,"Pre-paid","RTO","Snapdeal",48.0
+51,"Pre-paid","Returned","Snapdeal",9.0
+52,"COD","Delivered","Snapdeal",9629.0
+52,"COD","In Transit","Snapdeal",6.0
+52,"COD","LOST","Snapdeal",6.0
+52,"COD","Pending","Snapdeal",3.0
+52,"COD","RTO","Snapdeal",1841.0
+52,"COD","Returned","Snapdeal",122.0
+52,"Pre-paid","Delivered","Snapdeal",2066.0
+52,"Pre-paid","RTO","Snapdeal",115.0
+52,"Pre-paid","Returned","Snapdeal",8.0
+53,"COD","Delivered","Snapdeal",2294.0
+53,"COD","LOST","Snapdeal",1.0
+53,"COD","Pending","Snapdeal",2.0
+53,"COD","RTO","Snapdeal",563.0
+53,"COD","Returned","Snapdeal",44.0
+53,"Pre-paid","Delivered","Snapdeal",420.0
+53,"Pre-paid","In Transit","Snapdeal",1.0
+53,"Pre-paid","RTO","Snapdeal",18.0
+53,"Pre-paid","Returned","Snapdeal",3.0
+54,"COD","Delivered","Snapdeal",11677.0
+54,"COD","Dispatched","Snapdeal",1.0
+54,"COD","In Transit","Snapdeal",15.0
+54,"COD","LOST","Snapdeal",9.0
+54,"COD","Pending","Snapdeal",13.0
+54,"COD","RTO","Snapdeal",1972.0
+54,"COD","Returned","Snapdeal",217.0
+54,"Pre-paid","Delivered","Snapdeal",2448.0
+54,"Pre-paid","In Transit","Snapdeal",1.0
+54,"Pre-paid","LOST","Snapdeal",2.0
+54,"Pre-paid","RTO","Snapdeal",90.0
+54,"Pre-paid","Returned","Snapdeal",16.0
+55,"COD","Delivered","Snapdeal",8612.0
+55,"COD","In Transit","Snapdeal",4.0
+55,"COD","LOST","Snapdeal",1.0
+55,"COD","Pending","Snapdeal",8.0
+55,"COD","RTO","Snapdeal",1306.0
+55,"COD","Returned","Snapdeal",234.0
+55,"Pre-paid","Delivered","Snapdeal",1800.0
+55,"Pre-paid","RTO","Snapdeal",85.0
+55,"Pre-paid","Returned","Snapdeal",19.0
+56,"COD","Delivered","Snapdeal",7733.0
+56,"COD","In Transit","Snapdeal",5.0
+56,"COD","LOST","Snapdeal",3.0
+56,"COD","Pending","Snapdeal",17.0
+56,"COD","RTO","Snapdeal",1041.0
+56,"COD","Returned","Snapdeal",237.0
+56,"Pre-paid","Delivered","Snapdeal",1672.0
+56,"Pre-paid","In Transit","Snapdeal",3.0
+56,"Pre-paid","RTO","Snapdeal",235.0
+56,"Pre-paid","Returned","Snapdeal",19.0
+57,"COD","Delivered","Snapdeal",9868.0
+57,"COD","In Transit","Snapdeal",11.0
+57,"COD","LOST","Snapdeal",2.0
+57,"COD","Pending","Snapdeal",9.0
+57,"COD","RTO","Snapdeal",1091.0
+57,"COD","Returned","Snapdeal",268.0
+57,"Pre-paid","Delivered","Snapdeal",1949.0
+57,"Pre-paid","In Transit","Snapdeal",2.0
+57,"Pre-paid","RTO","Snapdeal",47.0
+57,"Pre-paid","Returned","Snapdeal",9.0
+58,"COD","Delivered","Snapdeal",14097.0
+58,"COD","In Transit","Snapdeal",17.0
+58,"COD","LOST","Snapdeal",2.0
+58,"COD","Pending","Snapdeal",21.0
+58,"COD","RTO","Snapdeal",1143.0
+58,"COD","Returned","Snapdeal",487.0
+58,"Pre-paid","Delivered","Snapdeal",2468.0
+58,"Pre-paid","In Transit","Snapdeal",4.0
+58,"Pre-paid","Pending","Snapdeal",2.0
+58,"Pre-paid","RTO","Snapdeal",95.0
+58,"Pre-paid","Returned","Snapdeal",15.0
+59,"COD","Delivered","Snapdeal",12959.0
+59,"COD","In Transit","Snapdeal",16.0
+59,"COD","LOST","Snapdeal",8.0
+59,"COD","Pending","Snapdeal",27.0
+59,"COD","RTO","Snapdeal",1087.0
+59,"COD","Returned","Snapdeal",589.0
+59,"Pre-paid","Delivered","Snapdeal",2364.0
+59,"Pre-paid","In Transit","Snapdeal",3.0
+59,"Pre-paid","LOST","Snapdeal",1.0
+59,"Pre-paid","Pending","Snapdeal",1.0
+59,"Pre-paid","RTO","Snapdeal",46.0
+59,"Pre-paid","Returned","Snapdeal",16.0
+60,"COD","Delivered","Snapdeal",3755.0
+60,"COD","In Transit","Snapdeal",7.0
+60,"COD","LOST","Snapdeal",2.0
+60,"COD","Pending","Snapdeal",5.0
+60,"COD","RTO","Snapdeal",310.0
+60,"COD","Returned","Snapdeal",186.0
+60,"Pre-paid","Delivered","Snapdeal",623.0
+60,"Pre-paid","RTO","Snapdeal",4.0
+60,"Pre-paid","Returned","Snapdeal",2.0
+61,"COD","Delivered","Snapdeal",13786.0
+61,"COD","Dispatched","Snapdeal",1.0
+61,"COD","In Transit","Snapdeal",26.0
+61,"COD","LOST","Snapdeal",4.0
+61,"COD","Pending","Snapdeal",63.0
+61,"COD","RTO","Snapdeal",896.0
+61,"COD","Returned","Snapdeal",1128.0
+61,"Pre-paid","Delivered","Snapdeal",2618.0
+61,"Pre-paid","In Transit","Snapdeal",5.0
+61,"Pre-paid","LOST","Snapdeal",1.0
+61,"Pre-paid","Pending","Snapdeal",4.0
+61,"Pre-paid","RTO","Snapdeal",35.0
+61,"Pre-paid","Returned","Snapdeal",23.0
+62,"COD","Delivered","Snapdeal",12648.0
+62,"COD","Dispatched","Snapdeal",1.0
+62,"COD","In Transit","Snapdeal",58.0
+62,"COD","LOST","Snapdeal",2.0
+62,"COD","Pending","Snapdeal",87.0
+62,"COD","RTO","Snapdeal",651.0
+62,"COD","Returned","Snapdeal",1216.0
+62,"Pre-paid","Delivered","Snapdeal",2157.0
+62,"Pre-paid","In Transit","Snapdeal",5.0
+62,"Pre-paid","RTO","Snapdeal",43.0
+62,"Pre-paid","Returned","Snapdeal",12.0
+63,"COD","Delivered","Snapdeal",10037.0
+63,"COD","Dispatched","Snapdeal",3.0
+63,"COD","In Transit","Snapdeal",51.0
+63,"COD","LOST","Snapdeal",1.0
+63,"COD","Pending","Snapdeal",112.0
+63,"COD","RTO","Snapdeal",344.0
+63,"COD","Returned","Snapdeal",1104.0
+63,"Pre-paid","Delivered","Snapdeal",1964.0
+63,"Pre-paid","Dispatched","Snapdeal",1.0
+63,"Pre-paid","In Transit","Snapdeal",15.0
+63,"Pre-paid","Pending","Snapdeal",2.0
+63,"Pre-paid","RTO","Snapdeal",49.0
+63,"Pre-paid","Returned","Snapdeal",26.0
+64,"COD","Delivered","Snapdeal",9730.0
+64,"COD","Dispatched","Snapdeal",8.0
+64,"COD","In Transit","Snapdeal",105.0
+64,"COD","Pending","Snapdeal",200.0
+64,"COD","RTO","Snapdeal",184.0
+64,"COD","Returned","Snapdeal",1189.0
+64,"Pre-paid","Delivered","Snapdeal",1782.0
+64,"Pre-paid","Dispatched","Snapdeal",2.0
+64,"Pre-paid","In Transit","Snapdeal",12.0
+64,"Pre-paid","Pending","Snapdeal",10.0
+64,"Pre-paid","RTO","Snapdeal",41.0
+64,"Pre-paid","Returned","Snapdeal",40.0
+65,"COD","Delivered","Snapdeal",2227.0
+65,"COD","Dispatched","Snapdeal",1.0
+65,"COD","In Transit","Snapdeal",19.0
+65,"COD","Pending","Snapdeal",42.0
+65,"COD","RTO","Snapdeal",33.0
+65,"COD","Returned","Snapdeal",232.0
+65,"Pre-paid","Delivered","Snapdeal",396.0
+65,"Pre-paid","Pending","Snapdeal",3.0
+65,"Pre-paid","Returned","Snapdeal",8.0
+66,"COD","Delivered","Snapdeal",12361.0
+66,"COD","Dispatched","Snapdeal",16.0
+66,"COD","In Transit","Snapdeal",159.0
+66,"COD","LOST","Snapdeal",2.0
+66,"COD","Not Picked","Snapdeal",1.0
+66,"COD","Pending","Snapdeal",579.0
+66,"COD","RTO","Snapdeal",96.0
+66,"COD","Returned","Snapdeal",1398.0
+66,"Pre-paid","Delivered","Snapdeal",2462.0
+66,"Pre-paid","Dispatched","Snapdeal",3.0
+66,"Pre-paid","In Transit","Snapdeal",23.0
+66,"Pre-paid","LOST","Snapdeal",4.0
+66,"Pre-paid","Pending","Snapdeal",49.0
+66,"Pre-paid","RTO","Snapdeal",52.0
+66,"Pre-paid","Returned","Snapdeal",36.0
+67,"COD","Delivered","Snapdeal",3895.0
+67,"COD","Dispatched","Snapdeal",5.0
+67,"COD","In Transit","Snapdeal",92.0
+67,"COD","LOST","Snapdeal",1.0
+67,"COD","Pending","Snapdeal",245.0
+67,"COD","RTO","Snapdeal",29.0
+67,"COD","Returned","Snapdeal",437.0
+67,"Pre-paid","Delivered","Snapdeal",533.0
+67,"Pre-paid","Dispatched","Snapdeal",1.0
+67,"Pre-paid","In Transit","Snapdeal",3.0
+67,"Pre-paid","Pending","Snapdeal",10.0
+67,"Pre-paid","Returned","Snapdeal",2.0
+68,"COD","Delivered","Snapdeal",11547.0
+68,"COD","Dispatched","Snapdeal",167.0
+68,"COD","In Transit","Snapdeal",1665.0
+68,"COD","LOST","Snapdeal",1.0
+68,"COD","Pending","Snapdeal",2618.0
+68,"COD","RTO","Snapdeal",18.0
+68,"COD","Returned","Snapdeal",1098.0
+68,"Pre-paid","Delivered","Snapdeal",2603.0
+68,"Pre-paid","Dispatched","Snapdeal",26.0
+68,"Pre-paid","In Transit","Snapdeal",227.0
+68,"Pre-paid","Pending","Snapdeal",231.0
+68,"Pre-paid","RTO","Snapdeal",62.0
+68,"Pre-paid","Returned","Snapdeal",92.0
+69,"COD","Delivered","Snapdeal",5899.0
+69,"COD","Dispatched","Snapdeal",292.0
+69,"COD","In Transit","Snapdeal",4394.0
+69,"COD","Pending","Snapdeal",2783.0
+69,"COD","RTO","Snapdeal",6.0
+69,"COD","Returned","Snapdeal",521.0
+69,"Pre-paid","Delivered","Snapdeal",1419.0
+69,"Pre-paid","Dispatched","Snapdeal",77.0
+69,"Pre-paid","In Transit","Snapdeal",564.0
+69,"Pre-paid","Pending","Snapdeal",465.0
+69,"Pre-paid","RTO","Snapdeal",19.0
+69,"Pre-paid","Returned","Snapdeal",40.0
+70,"COD","Delivered","Snapdeal",1140.0
+70,"COD","Dispatched","Snapdeal",380.0
+70,"COD","In Transit","Snapdeal",8493.0
+70,"COD","Pending","Snapdeal",1737.0
+70,"COD","RTO","Snapdeal",1.0
+70,"COD","Returned","Snapdeal",106.0
+70,"Pre-paid","Delivered","Snapdeal",448.0
+70,"Pre-paid","Dispatched","Snapdeal",97.0
+70,"Pre-paid","In Transit","Snapdeal",1389.0
+70,"Pre-paid","Pending","Snapdeal",423.0
+70,"Pre-paid","RTO","Snapdeal",8.0
+70,"Pre-paid","Returned","Snapdeal",73.0
+71,"COD","Delivered","Snapdeal",13.0
+71,"COD","Dispatched","Snapdeal",68.0
+71,"COD","In Transit","Snapdeal",11162.0
+71,"COD","Pending","Snapdeal",222.0
+71,"COD","Returned","Snapdeal",5.0
+71,"No Data","In Transit","Snapdeal",19.0
+71,"Pre-paid","Delivered","Snapdeal",3.0
+71,"Pre-paid","Dispatched","Snapdeal",21.0
+71,"Pre-paid","In Transit","Snapdeal",1971.0
+71,"Pre-paid","Pending","Snapdeal",76.0
+71,"Pre-paid","Returned","Snapdeal",12.0
+72,"COD","Dispatched","Snapdeal",1.0
+72,"COD","In Transit","Snapdeal",383.0
+72,"No Data","In Transit","Snapdeal",60.0
+72,"Pre-paid","In Transit","Snapdeal",38.0

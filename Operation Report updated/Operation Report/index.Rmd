@@ -1,0 +1,2543 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : default      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo      : logo_delhivery.jpg
+---
+```{r , echo=FALSE}  
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r, echo=FALSE}
+snapdeal=read.csv("~/R/snapdeal1.csv")
+flipkart=read.csv("~/R/flipkart1.csv")
+hs18=read.csv("~/R/h-s 18.csv")
+key_ops_return = read.csv("~/R/key ops- return.csv")
+key_ops_failure = read.csv("~/R/key ops- failure & cost.csv")
+key_operating_overall = read.csv("~/R/key-operating-overall.csv")
+key_operating_del = read.csv("~/R/key-operating-Del.csv")
+key_operating_bom = read.csv("~/R/key-operating-Bom.csv")
+key_operating_blr = read.csv("~/R/key-operating-Blr.csv")
+lh_review = read.csv("~/R/LH-Review.csv")
+
+slide_3_plan = read.csv("~/R/slide-3-plan.csv")
+Client_plan = read.csv("~/R/Client_plan.csv")
+Lane_matrix = read.csv("~/R/Lane-Matrix .csv")
+zz_rep_6_7 = read.csv("~/R/zz-rep-6-7.csv")
+zz_rep_4_5 = read.csv("~/R/zz-rep-4-5.csv")
+zz_district_pin = read.csv("~/R/zz-distict-pin.csv")
+zz_district_pin_snapdeal = read.csv("~/R/zz-distict-pin-snapdeal.csv")
+zz_rep_10_pdd_minus_fdd = read.csv("~/R/cl-rep-10-pdd-minus-fdd.csv")
+zz_rep_10_ed_minus_fdd = read.csv("~/R/cl-rep-10-ed-minus-fdd.csv")
+zz_rep_11_fbd_minus_ivd = read.csv("~/R/occ_cl_rep_11_fbd_minus_ivd.csv")
+zz_rep_11_ivd_minus_pd = read.csv("~/R/occ_cl_rep_11_ivd_minus_pd.csv")
+zz_rep_13_10_3 = read.csv("~/R/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_snapdeal = read.csv("~/R/zz-rep-13-10-3-snapdeal.csv")
+zz_rep_13_10_3_zn = read.csv("~/R/zz-rep-13-10-3-zn.csv")
+zz_rep_16_22 = read.csv("~/R/zz-rep-16-22.csv")
+zz_rep_24 = read.csv("~/R/zz-rep-24.csv")
+zz_rep_25 = read.csv("~/R/zz-rep-25.csv")
+zz_rep_31 = read.csv("~/R/zz-rep-31.csv")
+zz_rep_avg_dict = read.csv("~/R/zz-rep-avg-dict.csv")
+zz_rep_ebbr = read.csv("~/R/zz-rep-ebbr.csv")
+zz_rep_pddbr = read.csv("~/R/zz-rep-pddbr.csv")
+zz_rep_pd_zn_d_10 = read.csv("~/R/zz-rep-pd-zn-d-10.csv")
+cl_cs_pt_rep_13_10_3_zn = read.csv("~/R/cl_cs_pt_rep_13_10_3_zn.csv")
+cl_zn_rep_10_pd=read.csv("~/R/cl_zn_rep_10_pd.csv")
+##cl_cs_pt_rep_13_10_3_zn
+```
+
+
+```{r , echo=FALSE, warning=FALSE}
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+
+zz_rep_13_10_3_op2 = zz_rep_13_10_3_op1 %>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+zz_rep_13_10_3_op2$wkend_dt = as.character(zz_rep_13_10_3_op2$wkend_dt)
+
+zz_rep_13_10_3_op2$wkend_dt = as.POSIXct(zz_rep_13_10_3_op2$wkend_dt , format="%j")
+
+
+zz_rep_13_10_3_op3 = zz_rep_13_10_3_op2 %>%
+  filter(X_id.dl_pt %in% c("COD" , "Pre-paid" , "Pickup" , "Cash"))%>%
+  mutate(payment_type = ifelse(X_id.dl_pt %in% c("COD" , "Pre-paid") , "Forward",
+                               ifelse(X_id.dl_pt %in% c("Pickup") , "Reverse",
+                                      ifelse(X_id.dl_pt %in% c("Cash") , "Cash","NA"
+                                             
+                                      )))) %>%
+  group_by (wkend_dt , payment_type) %>%
+  summarise(Actual_Volume = sum(dl_count)) %>%
+  
+  arrange(wkend_dt)
+
+
+zz_rep_13_10_3_op3$wkend_dt = as.character(zz_rep_13_10_3_op3$wkend_dt)
+
+zz_rep_13_10_3_op4 = melt(zz_rep_13_10_3_op3 , id = c("wkend_dt" , "payment_type") )
+
+zz_rep_13_10_3_op5 = dcast(zz_rep_13_10_3_op4, wkend_dt~payment_type  , value.var="value")
+
+zz_rep_13_10_3_op5$wkend_dt = strftime(zz_rep_13_10_3_op5$wkend_dt,format="%D")
+
+zz_rep_13_10_3_op5 = zz_rep_13_10_3_op5%>%
+  rowwise()%>%
+  mutate(Actual_Total = sum(Cash,  Forward,	Reverse))
+slide_3_plan$wkend_dt = as.character(slide_3_plan$wkend_dt)
+slide_3_plan = dplyr::rename(slide_3_plan ,  Plan_Total = Total)
+
+zz_rep_13_10_3_op6 = inner_join( slide_3_plan, zz_rep_13_10_3_op5 , by="wkend_dt")
+
+  zz_rep_13_10_3_op6 = zz_rep_13_10_3_op6%>%
+  mutate(Gap = Actual_Total-Plan_Total )
+
+zz_rep_13_10_3_op6 = zz_rep_13_10_3_op6%>%mutate(Gap_Perc = round((Gap/Plan_Total*100),1))
+
+zz_rep_13_10_3_op7 = melt(zz_rep_13_10_3_op6 , id = c("wkend_dt"))%>%
+  mutate(value=ifelse(value!="Gap_Perc" , as.character(round(value,0)) , paste(value , "%")))
+  
+zz_rep_13_10_3_op8 = zz_rep_13_10_3_op7%>%
+  dcast(variable~wkend_dt , value.var="value")
+
+x <- c("Plan_Total", "Plan_Forward", "Plan_Reverse"  , "Plan_Cash" , 
+       "Actual_Total"  , "Forward" , "Reverse"  , "Cash" , 
+       "Gap" , "Gap_Perc")
+
+zz_rep_13_10_3_op8 = zz_rep_13_10_3_op8 %>%
+  slice(match(x, variable))
+
+
+##Slide 4 
+
+zz_rep_4_5$X_id.dl_occ = as.character(zz_rep_4_5$X_id.dl_occ)
+
+
+zz_rep_4_5_op2 = zz_rep_4_5 %>%
+  select(X_id.dl_oc , dl_count) %>%
+  group_by(X_id.dl_oc) %>%
+  summarize(count = sum(dl_count))
+
+
+
+zz_rep_4_5_op1 = zz_rep_4_5 %>%
+  mutate(Origin = ifelse ( X_id.dl_occ=="Ahmedabad" , "AMD",
+                  ifelse (X_id.dl_occ=="Chennai" , "MAA",
+                  ifelse (X_id.dl_occ=="Bangalore" , "BLR",
+                  ifelse (X_id.dl_occ=="Mumbai" , "BOM",
+                  ifelse (X_id.dl_occ=="Kolkata" , "CCU",
+                  ifelse (X_id.dl_occ=="Delhi NCR" , "DEL",
+                  ifelse (X_id.dl_occ=="Surat" , "STV",
+                  ifelse (X_id.dl_occ=="Hyderabad" , "HYD",
+                  ifelse (X_id.dl_occ=="Panipat" , "PAP",
+                  ifelse (X_id.dl_occ=="Jaipur" , "JAI","OTHERS"     
+                   ))))))))))
+         , Month = as.integer(strftime(strptime(X_id.dl_date ,  "%j") , "%m"))
+  )
+
+slide_4_max_month = max(zz_rep_4_5_op1$Month)
+slide_4_prev_month = slide_4_max_month -1
+
+zz_rep_4_5_op2 = zz_rep_4_5_op1 %>%
+  filter(Month %in% c(slide_4_max_month , slide_4_prev_month)) %>%
+  mutate (Month_flag = ifelse(Month==slide_4_max_month , "MTD" ,
+                              ifelse(Month==slide_4_prev_month , "PREV" , "NA"
+                              ))) 
+
+zz_rep_4_5_op3 = zz_rep_4_5_op2 %>%
+  group_by(Month_flag) %>%
+  summarise(count=sum(dl_count))
+
+slide_4_MTD_cnt = zz_rep_4_5_op3 %>% filter (Month_flag=="MTD") %>% select(count)
+slide_4_PREV_cnt = zz_rep_4_5_op3 %>% filter (Month_flag=="PREV") %>% select(count)
+
+zz_rep_4_5_op4 = zz_rep_4_5_op2 %>%
+  filter(Month_flag %in% c("MTD" , "PREV")) %>%
+  group_by(Origin , Month_flag) %>%
+  summarise(count=sum(dl_count))
+
+zz_rep_4_5_op5 = zz_rep_4_5_op4 %>%
+  filter(Month_flag %in% c("PREV")) %>%
+  mutate(Total = ifelse(Month_flag=="MTD" , count*100/slide_4_MTD_cnt,
+                        ifelse(Month_flag=="PREV" ,count*100/slide_4_PREV_cnt,0)))
+
+zz_rep_4_5_op5_2 = zz_rep_4_5_op4 %>%
+  filter(Month_flag %in% c("MTD")) %>%
+  mutate(Total = ifelse(Month_flag=="MTD" , count*100/slide_4_MTD_cnt,
+                        ifelse(Month_flag=="PREV" ,count*100/slide_4_PREV_cnt,0)))
+
+zz_rep_4_5_op5_3 = zz_rep_4_5_op5_2%>%
+  ungroup()%>%
+  select(Origin , count)
+
+
+slide_4_plan=read.csv("~/R/slide_4_plan.csv")
+slide_4_plan$Origin=as.character(slide_4_plan$Origin)
+
+zz_rep_4_5_op5_4 = inner_join (slide_4_plan , zz_rep_4_5_op5_3 , by="Origin")
+
+zz_rep_4_5_op5_5 = zz_rep_4_5_op5_4%>%
+  mutate(Gap = as.numeric(count)-as.numeric(Plan_count))
+
+zz_rep_4_5_op5_5 =zz_rep_4_5_op5_5%>%
+  dplyr::rename(Actual_count = count)%>%
+  mutate(Gap_pct = round(as.numeric(Gap)*100/as.numeric(Plan_count),1))
+
+zz_rep_4_5_op5 = rbind(zz_rep_4_5_op5,zz_rep_4_5_op5_2)
+
+
+zz_rep_4_5_op6 =   zz_rep_4_5_op5 %>% select(Origin , Month_flag , Total)
+
+zz_rep_4_5_op7 = dcast(zz_rep_4_5_op6, Origin~Month_flag  , value.var="Total")
+
+zz_rep_4_5_op7 = zz_rep_4_5_op7%>%
+  select(Origin , PREV , MTD)
+
+x <- c("DEL", "BOM", "BLR"  , "CCU" , "STV" ,"JAI" , "AMD" , "PAP" , "HYD" , "MAA" , "OTHERS")
+zz_rep_4_5_op8 = zz_rep_4_5_op7 %>%
+  slice(match(x, Origin))
+
+zz_rep_4_5_op8 = zz_rep_4_5_op8%>%
+  mutate(MTD = paste(round(as.numeric(MTD), digits = 2),"%") , 
+         PREV = paste(round(as.numeric(PREV), digits = 2),"%"))
+
+##paste(x, collapse="--")
+##zz_rep_4_5_op7 = zz_rep_4_5_op7 %>%arrange(as.integer(MTD))
+  
+##Slide 5
+zz_rep_5_op1 = zz_rep_4_5 %>%
+  mutate(Origin = ifelse (         X_id.dl_oc=="Delhi_S_PC (Delhi)" , "Delhi_S_PC",
+                                   ifelse (X_id.dl_oc=="Del_Okhla_PC (Delhi)" , "Del_Okhla_PC",
+                                   ifelse (X_id.dl_oc=="GGN_Gateway (Haryana)" , "GGN_Gateway",         
+                                   ifelse (X_id.dl_oc=="Kirtinagar_PC (Delhi)" , "Kirtinagar_PC",
+                                   ifelse (X_id.dl_oc=="Bhiwandi_Pc (Maharashtra)" , "Bhiwandi_Pc",
+                                   ifelse (X_id.dl_oc=="Mumbai_Andheri_PC (Maharashtra)" , "Mumbai_Andheri PC",
+                                   ifelse (X_id.dl_oc=="Chennai_Alandur _Pc (Tamil Nadu)" , "Chennai_Alandur",
+                                   ifelse (X_id.dl_oc=="Hyd_Hub (Andhra Pradesh)" , "Hyd_Hub",
+                                   ifelse (X_id.dl_oc=="HS18 Daruhera Implant (Delhi)" , "HS18 Daruhera Implant",
+                                   ifelse (X_id.dl_oc=="Blr_Domlur (Karnataka)" , "Blr_Domlur",
+                                   ifelse (X_id.dl_oc=="Tirupur (Tamil Nadu)" , "Tirupur",
+                                   ifelse (X_id.dl_oc=="Chandigarh_Hub (Chandigarh)" , "Chandigarh_Hub",
+                                   ifelse (X_id.dl_oc=="Pune Hub (Maharashtra)" , "Pune Hub",       
+                                   ifelse (X_id.dl_oc=="BLR_HegdeNagar_PC (Karnataka)" , "BLR_HegdeNagar_PC",
+                                   ifelse (X_id.dl_oc=="CCU_Gopalpur_PC (West Bengal)" , "CCU_Gopalpur_PC",
+                                   ifelse (X_id.dl_oc=="Surat_Pc (Gujarat)" , "Surat_Pc",
+                                   ifelse (X_id.dl_oc=="Jaipur_Hub (Rajasthan)" , "Jaipur_Hub",
+                                   ifelse (X_id.dl_oc=="AMD_PC (Gujarat)" , "AMD_PC",
+                                   ifelse (X_id.dl_oc=="Panipat_PC (Haryana)" , "Panipat_PC",
+                                   ifelse (X_id.dl_oc=="Indore_Las (Madhya Pradesh)" , "Indore_Las","OTHERS"     
+                                   )))))))))))))))))))),
+         day_5=strftime(strptime(X_id.dl_date ,  "%j") , "%a"))
+
+slide_5_min_mon = zz_rep_5_op1 %>%
+  filter(day_5=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_5_min_mon = as.integer(slide_5_min_mon)
+
+
+zz_rep_5_op2 = zz_rep_5_op1 %>%
+  filter(X_id.dl_date>=slide_5_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_5_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_5_min_mon)+6)
+
+
+zz_rep_5_op2$wkend_dt = as.character(zz_rep_5_op2$wkend_dt)
+
+zz_rep_5_op2$wkend_dt = as.POSIXct(zz_rep_5_op2$wkend_dt , format="%j")
+
+
+zz_rep_5_op3 = zz_rep_5_op2 %>%  group_by (wkend_dt , Origin) %>%
+  summarise(Actual_Volume = sum(dl_count)) %>%
+  arrange(Actual_Volume)
+
+ 
+
+  zz_rep_5_op3$Origin = as.character(zz_rep_5_op3$Origin)
+zz_rep_5_op3$wkend_dt = as.character(zz_rep_5_op3$wkend_dt)
+
+zz_rep_5_op4 = melt(zz_rep_5_op3 , id.vars = c("Origin" , "wkend_dt") )%>%
+  arrange(as.integer(value))
+
+zz_rep_5_op5 = dcast(zz_rep_5_op4, Origin~wkend_dt  , value.var="value") %>%
+  filter(Origin!="OTHERS")%>%
+  arrange(desc(`2015-03-28`))
+
+# x <- c("Del_Okhla_PC (Delhi)", "Delhi_S_PC (Delhi)",
+#        "GGN_Gateway (Haryana)"  , "BLR_HegdeNagar_PC (Karnataka)" ,
+#        "Kirtinagar_PC (Delhi)" ,"Bhiwandi_Pc (Maharashtra)" ,
+#        "Mumbai_Andheri_PC (Maharashtra)" , "CCU_Gopalpur_PC (West Bengal)" ,
+#        "Surat_Pc (Gujarat)" , "AMD_PC (Gujarat)" , "Jaipur_Hub (Rajasthan)" , 
+#        "Chennai_Alandur _Pc (Tamil Nadu)" , "Hyd_Hub (Andhra Pradesh)", "HS18 Daruhera Implant (Delhi)", "Blr_Domlur(Karnataka)", "Tirpur (Tamil Nadu)", "Chandigarh_Hub (Chandigarh)", 
+#        "Panipat_PC (Haryana)", "Pune Hub (Maharashtra)", "Indore_Las (Madhya Pradesh)"
+#        )
+# zz_rep_5_op6 = zz_rep_5_op5 %>%
+#   slice(match(x, Origin))
+
+zz_rep_5_op33 =zz_rep_5_op3%>%
+  group_by (Origin) %>%
+  filter(wkend_dt=="2015-03-28")%>%
+  summarise(sum = sum(Actual_Volume))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  filter(Origin!="OTHERS")%>%
+  arrange(desc(pct)) %>%
+  select(Origin , pct)
+zz_rep_5_op33 = zz_rep_5_op33%>%
+  mutate (pct = paste(round(as.numeric(pct),1),"%"))
+zz_rep_5_op5 = inner_join(zz_rep_5_op33 , zz_rep_5_op5 ,by="Origin")
+
+zz_rep_5_op5 =  zz_rep_5_op5%>%
+dplyr::rename(percent = pct , `02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+####Slide 6,7,8=""
+
+Lane_matrix2=Lane_matrix %>%
+  select(City , Tier.Type)
+
+
+zz_rep_24 <- data.frame(lapply(zz_rep_24, as.character), stringsAsFactors=FALSE)
+
+Lane_matrix2$City = as.character(Lane_matrix2$City)
+
+zz_rep_6_7$X_id.dl_cnc = as.character(zz_rep_6_7$X_id.dl_cnc)
+
+
+zz_rep_7_op1 = left_join(zz_rep_24, Lane_matrix2, by = c("X_id.dl_cnc" = "City")) %>%
+  distinct()
+
+zz_rep_7_op2 = zz_rep_7_op1 %>%filter(Tier.Type %in% 
+                                        c("Metro" , "Tier 2" , "Tier 1" , "Tier 3")) %>%
+  mutate(Origin = ifelse ( X_id.dl_cnc=="Ahmedabad" , "AMD",
+                           ifelse (X_id.dl_cnc=="Chennai" , "MAA",
+                          ifelse (X_id.dl_cnc=="Bangalore" , "BLR",
+                       ifelse (X_id.dl_cnc=="Mumbai" , "BOM" , 
+                  ifelse (X_id.dl_cnc=="Kolkata" , "CCU",
+                  ifelse (X_id.dl_cnc=="Delhi NCR" , "DEL",
+                  ifelse (X_id.dl_cnc=="Hyderabad" , "HYD",
+                  ifelse (X_id.dl_cnc=="Pune" , "PNQ","OTHERS"
+                  )))))))),
+         Tier= ifelse(Tier.Type %in%c("Metro" ) , "Metro" ,
+               ifelse(Tier.Type %in%c("Tier 1" ) , "Tier 1" ,      "Tier 2/3"))         
+          )
+
+
+
+
+zz_rep_7_op2 = zz_rep_7_op2 %>%
+  filter(X_id.dl_date>=slide_3_min_mon ) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)+as.integer(slide_3_min_mon)+6) 
+
+
+zz_rep_7_op2$wkend_dt = as.character(zz_rep_7_op2$wkend_dt)
+
+zz_rep_7_op2$wkend_dt = as.POSIXct(zz_rep_7_op2$wkend_dt , format="%j")
+
+
+zz_rep_7_op3 = zz_rep_7_op2%>%
+  select(X_id.dl_date,  X_id.dl_occ  ,
+         X_id.dl_cnc,	X_id.dl_cs_ss,	dl_count,	Tier,	Origin,	wkend_dt)%>%
+  filter(X_id.dl_occ!="" , X_id.dl_cnc!="")
+
+zz_rep_7_op3_metro = zz_rep_7_op3%>%
+group_by  ( wkend_dt , Origin ) %>%
+  summarize(totcount = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*totcount/sum(totcount))
+
+
+zz_rep_7_op3_metro2 = zz_rep_7_op3_metro%>%
+  select(wkend_dt,  Origin,  totcount)%>%
+  dcast(Origin~wkend_dt  , value.var="totcount")
+
+
+x <- c("DEL", "BOM", "BLR"  , "CCU" , "MAA"  , "AMD" , "PNQ"  , "OTHERS")
+zz_rep_7_op3_metro2 = zz_rep_7_op3_metro2 %>%
+  slice(match(x, Origin))
+
+zz_rep_7_op3_metro3 = zz_rep_7_op3_metro %>%
+  filter(wkend_dt=="2015-03-14")%>%
+  ungroup()%>%
+    select(Origin , pct)%>%
+  slice(match(x, Origin))
+
+  ##zz_rep_7_op3_metro =  zz_rep_7_op3_metro%>%select(Origin , pct)
+zz_rep_7_op3_metro3 = zz_rep_7_op3_metro3%>%
+  mutate (pct = paste(round(as.numeric(pct),1),"%"))
+
+zz_rep_7_op3_metro33 = inner_join(zz_rep_7_op3_metro3 , zz_rep_7_op3_metro2,
+                                 by="Origin")%>%
+  dplyr::rename(percent = pct , `02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+
+
+  
+  ####################################Tier 1#############################
+
+zz_rep_7_op22 = zz_rep_7_op1 %>%filter(Tier.Type %in% 
+                                        c("Metro" , "Tier 2" , "Tier 1" , "Tier 3")) %>%
+  mutate(Origin = ifelse ( X_id.dl_cnc=="Guwahati" , "Guwahati",
+                 ifelse (X_id.dl_cnc=="Lucknow" , "Lucknow",
+                 ifelse (X_id.dl_cnc=="Surat" , "Surat",
+                 ifelse (X_id.dl_cnc=="Goa" , "Goa" ,
+                 ifelse (X_id.dl_cnc=="Bhubaneshwar" , "Bhubaneshwar" ,
+                 ifelse (X_id.dl_cnc=="Jaipur" , "Jaipur" ,
+                 ifelse (X_id.dl_cnc=="Chandigarh" , "Chandigarh" ,
+                 ifelse (X_id.dl_cnc=="Vishakhapatnam" , "Vishakhapatnam" ,
+                 ifelse (X_id.dl_cnc=="Indore" , "Indore" ,
+                 ifelse (X_id.dl_cnc=="Nagpur" , "Nagpur" ,
+                 ifelse (X_id.dl_cnc=="Bhopal" , "Bhopal" ,
+                 ifelse (X_id.dl_cnc=="Coimbatore" , "Coimbatore" ,
+                 ifelse (X_id.dl_cnc=="Srinagar" , "Srinagar" ,
+                 ifelse (X_id.dl_cnc=="Pondicherry" , "Pondicherry" ,
+                 ifelse (X_id.dl_cnc=="Howrah" , "Howrah" ,
+                 ifelse (X_id.dl_cnc=="Patna" , "Patna", "OTHERS"
+                        ) ))))))))))))))),
+         Tier= ifelse(Tier.Type %in%c("Metro" ) , "Metro" ,
+                      ifelse(Tier.Type %in%c("Tier 1" ) , "Tier 1" ,      "Tier 2/3"))         
+  )
+
+
+
+
+zz_rep_7_op22 = zz_rep_7_op22 %>%
+  filter(X_id.dl_date>=slide_3_min_mon ) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)+as.integer(slide_3_min_mon)+6) 
+
+
+zz_rep_7_op22$wkend_dt = as.character(zz_rep_7_op22$wkend_dt)
+
+zz_rep_7_op22$wkend_dt = as.POSIXct(zz_rep_7_op22$wkend_dt , format="%j")
+
+
+zz_rep_7_op33 = zz_rep_7_op22%>%
+  select(X_id.dl_date,  X_id.dl_occ  ,
+         X_id.dl_cnc,  X_id.dl_cs_ss,	dl_count,	Tier,	Origin,	wkend_dt)%>%
+  filter(X_id.dl_occ!="" , X_id.dl_cnc!="")
+
+zz_rep_7_op3_t1 = zz_rep_7_op33%>%
+  group_by  ( wkend_dt , Origin ) %>%
+  summarize(totcount = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*totcount/sum(totcount))
+
+
+zz_rep_7_op3_t1_2 = zz_rep_7_op3_t1%>%
+  filter(Origin!="OTHERS")%>%
+  select(wkend_dt,  Origin,  totcount)%>%
+  dcast(Origin~wkend_dt  , value.var="totcount")%>%
+  arrange(desc(`2015-03-14`))
+  
+
+zz_rep_7_op3_t1 = zz_rep_7_op3_t1 %>%
+  filter(wkend_dt=="2015-03-14" , Origin!="OTHERS")%>%
+  ungroup()%>%
+    select(Origin , pct)%>%
+  arrange(desc(pct))
+
+zz_rep_7_op3_t1 = zz_rep_7_op3_t1%>%
+  mutate (pct = paste(round(as.numeric(pct),1),"%"))
+##zz_rep_7_op3_metro =  zz_rep_7_op3_metro%>%select(Origin , pct)
+
+zz_rep_7_op3_t1_3 = inner_join(zz_rep_7_op3_t1 , zz_rep_7_op3_t1_2,
+                                 by="Origin")%>%
+  dplyr::rename(percent = pct , `02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+############################################Tier 2/3 ###################################################
+
+zz_rep_7_op222 = zz_rep_7_op1 %>%filter(Tier.Type %in% 
+                                         c("Metro" , "Tier 2" , "Tier 1" , "Tier 3")) %>%
+  mutate(Origin = ifelse ( X_id.dl_cnc=="Mangalore" , "Mangalore",
+                     ifelse (X_id.dl_cnc=="Ludhiana" , "Ludhiana",
+                     ifelse (X_id.dl_cnc=="Vadodara" , "Vadodara",
+                     ifelse (X_id.dl_cnc=="Gulbarga" , "Gulbarga" ,
+                     ifelse (X_id.dl_cnc=="Durg-Bhilainagar" , "Durg-Bhilainagar" ,
+                     ifelse (X_id.dl_cnc=="NSZ" , "NSZ" ,
+                     ifelse (X_id.dl_cnc=="Dhanbad" , "Dhanbad" ,
+                     ifelse (X_id.dl_cnc=="Raipur" , "Raipur" ,
+                     ifelse (X_id.dl_cnc=="Mysore" , "Mysore" ,
+                     ifelse (X_id.dl_cnc=="Rourkela" , "Rourkela" ,
+                     ifelse (X_id.dl_cnc=="Tumkur" , "Tumkur" ,
+                     ifelse (X_id.dl_cnc=="Shillong" , "Shillong" ,
+                     ifelse (X_id.dl_cnc=="Rewa" , "Rewa" ,
+                     ifelse (X_id.dl_cnc=="Jalandhar" , "Jalandhar" ,
+                     ifelse (X_id.dl_cnc=="Vapi" , "Vapi" ,
+                     ifelse (X_id.dl_cnc=="Tirupur" , "Tirupur" ,
+                     ifelse (X_id.dl_cnc=="Amritsar" , "Amritsar" ,
+                     ifelse (X_id.dl_cnc=="Rudrapur" , "Rudrapur" ,
+                     ifelse (X_id.dl_cnc=="Gorakhpur" , "Gorakhpur" ,
+                     ifelse (X_id.dl_cnc=="Ujjain" , "Ujjain" ,
+                     ifelse (X_id.dl_cnc=="Behrampur" , "Behrampur" ,
+                     ifelse (X_id.dl_cnc=="Dehradun" , "Dehradun" ,
+                     ifelse (X_id.dl_cnc=="Nashik" , "Nashik" ,
+                     ifelse (X_id.dl_cnc=="Karur" , "Karur" ,
+                     ifelse (X_id.dl_cnc=="Jamnagar" , "Jamnagar" , "OTHERS"
+                     ) )))))))))))))))))))))))),
+         Tier= ifelse(Tier.Type %in%c("Metro" ) , "Metro" ,
+                      ifelse(Tier.Type %in%c("Tier 1" ) , "Tier 1" ,      "Tier 2/3"))         
+  )
+
+
+
+
+zz_rep_7_op222 = zz_rep_7_op222 %>%
+  filter(X_id.dl_date>=slide_3_min_mon ) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)+as.integer(slide_3_min_mon)+6) 
+
+
+zz_rep_7_op222$wkend_dt = as.character(zz_rep_7_op222$wkend_dt)
+
+zz_rep_7_op222$wkend_dt = as.POSIXct(zz_rep_7_op222$wkend_dt , format="%j")
+
+
+zz_rep_7_op333 = zz_rep_7_op222%>%
+  select(X_id.dl_date,  X_id.dl_occ  ,
+         X_id.dl_cnc,  X_id.dl_cs_ss,  dl_count,	Tier,	Origin,	wkend_dt)%>%
+  filter(X_id.dl_occ!="" , X_id.dl_cnc!="")
+
+zz_rep_7_op3_t2 = zz_rep_7_op333%>%
+  group_by  ( wkend_dt , Origin ) %>%
+  summarize(totcount = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*totcount/sum(totcount))
+
+
+zz_rep_7_op3_t2_2 = zz_rep_7_op3_t2%>%
+  select(wkend_dt,  Origin,  totcount)%>%
+  dcast(Origin~wkend_dt  , value.var="totcount")
+
+
+
+zz_rep_7_op3_t2 = zz_rep_7_op3_t2 %>%
+  filter(wkend_dt=="2015-03-14" , Origin!="OTHERS")%>%
+  ungroup()%>%
+    select(Origin , pct)%>%
+  arrange(desc(pct))
+
+zz_rep_7_op3_t2 = zz_rep_7_op3_t2%>%
+  mutate (pct = paste(round(as.numeric(pct),1),"%"))
+##zz_rep_7_op3_metro =  zz_rep_7_op3_metro%>%select(Origin , pct)
+
+zz_rep_7_op3_t2_3 = inner_join(zz_rep_7_op3_t2 , zz_rep_7_op3_t2_2,
+                                 by="Origin")%>%
+  dplyr::rename(percent = pct , `02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+
+# 
+# zz_rep_7_op3_t1 = zz_rep_7_op3%>%
+#   filter(Tier =="Tier 1")%>%
+#   group_by  ( wkend_dt , Origin ) %>%
+#   summarize(totcount = sum(as.numeric(dl_count)))%>%
+#   mutate(pct=100*totcount/sum(totcount))
+# 
+# 
+# 
+# zz_rep_7_op3_t2_3 = zz_rep_7_op3%>%
+#   filter(Tier %in% c("Tier 2/3" ))%>%
+#   group_by  ( wkend_dt , Origin ) %>%
+#   summarize(totcount = sum(as.numeric(dl_count)))%>%
+#   mutate(pct=100*totcount/sum(totcount))
+# 
+# 
+# 
+# 
+# zz_rep_7_op3_metro2 = zz_rep_7_op3_metro%>%
+#   select(wkend_dt,  Origin,	totcount)%>%
+# dcast(Origin~wkend_dt  , val.var="totcount")
+# 
+# 
+# zz_rep_7_op3_t1_2 = zz_rep_7_op3_t1%>%
+#   select(wkend_dt,  Origin,  totcount)%>%
+#   dcast(Origin~wkend_dt  , val.var="totcount")
+# 
+# 
+# zz_rep_7_op3_t2_3_2 = zz_rep_7_op3_t2_3%>%
+#   select(wkend_dt,  Origin,  totcount)%>%
+#   dcast(Origin~wkend_dt  , val.var="totcount")
+
+####Slide 10
+
+zz_rep_10_op1 = zz_rep_16_22 %>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 
+        
+           
+           )
+
+zz_rep_10_op1$wkend_dt = as.character(zz_rep_10_op1$wkend_dt)
+
+zz_rep_10_op1$wkend_dt = as.POSIXct(zz_rep_10_op1$wkend_dt , format="%j")
+
+
+
+
+zz_rep_10_op2 = zz_rep_10_op1 %>%
+  
+  group_by (wkend_dt , X_id.dl_time )%>%
+  summarise(sum = sum(dl_count)) %>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = cumsum(pct))
+  
+  
+
+zz_rep_10_op22 = zz_rep_10_op2%>%
+  filter(X_id.dl_time <4)%>%
+dcast(X_id.dl_time ~wkend_dt  , value.var="cumsum")
+  
+
+
+zz_rep_10_op22 =zz_rep_10_op22 %>%
+rowwise() %>% 
+  mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),	as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+         Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+                  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+                  
+         )
+
+
+zz_rep_10_op22 = zz_rep_10_op22%>%
+  mutate(X_id.dl_time = paste("D" ,X_id.dl_time ))%>%
+  dplyr::rename(Speed = X_id.dl_time , `02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+  
+zz_rep_10_p2_op1 = zz_rep_10_pdd_minus_fdd %>%
+filter(X_id.dl_date>=slide_3_min_mon  , 
+       X_id.pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+zz_rep_10_p2_op1$wkend_dt = as.character(zz_rep_10_p2_op1$wkend_dt)
+
+zz_rep_10_p2_op1$wkend_dt = as.POSIXct(zz_rep_10_p2_op1$wkend_dt , format="%j")
+
+
+zz_rep_10_p2_op2 = zz_rep_10_p2_op1 %>%
+  mutate(p2d_flag = ifelse(X_id.pddMinusFdd < 0 , 1,0
+       )) %>%
+  group_by(wkend_dt , p2d_flag)%>%
+  summarise(sum = sum(dl_count))%>%
+mutate(pct=100*sum/sum(sum)) %>%
+    filter(p2d_flag ==1)%>%
+    dcast(p2d_flag~wkend_dt  ,value.var="pct")%>%
+  dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+
+
+zz_rep_10_p3_op1 = zz_rep_10_ed_minus_fdd %>%
+filter(X_id.dl_date>=slide_3_min_mon , X_id.pt %in% c("COD" , "Pre-paid") ) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+zz_rep_10_p3_op1$wkend_dt = as.character(zz_rep_10_p3_op1$wkend_dt)
+
+zz_rep_10_p3_op1$wkend_dt = as.POSIXct(zz_rep_10_p3_op1$wkend_dt , format="%j")
+
+
+zz_rep_10_p3_op2 = zz_rep_10_p3_op1 %>%
+  mutate(p2d_flag = ifelse(X_id.edMinusFdd < 0 , 1,0
+       )) %>%
+  group_by(wkend_dt , p2d_flag)%>%
+  summarise(sum = sum(dl_count))%>%
+mutate(pct=100*sum/sum(sum)) %>%
+    filter(p2d_flag ==1)%>%
+    dcast(p2d_flag~wkend_dt  ,value.var="pct")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+
+####################Slide 11###############################
+
+
+##Slide 11
+zz_rep_11_op1 = zz_rep_11_ivd_minus_pd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_op1$wkend_dt = as.character(zz_rep_11_op1$wkend_dt)
+
+zz_rep_11_op1$wkend_dt = as.POSIXct(zz_rep_11_op1$wkend_dt , format="%j")
+
+zz_rep_11_op2 = zz_rep_11_op1%>%
+  group_by(wkend_dt,X_id.deltaHr)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+zz_rep_11_op3 = zz_rep_11_op2 %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+zz_rep_11_2_op1 = zz_rep_11_fbd_minus_ivd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_2_op1$wkend_dt = as.character(zz_rep_11_2_op1$wkend_dt)
+
+zz_rep_11_2_op1$wkend_dt = as.POSIXct(zz_rep_11_2_op1$wkend_dt , format="%j")
+
+zz_rep_11_2_op2 = zz_rep_11_2_op1%>%
+  group_by(wkend_dt , X_id.deltaHr   )%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+
+zz_rep_11_2_op3 = zz_rep_11_2_op2 %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+#############Processing Metrics City Wise##############
+
+zz_rep_11_op1_del = zz_rep_11_ivd_minus_pd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Delhi NCR"
+
+         ) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_op1_del$wkend_dt = as.character(zz_rep_11_op1_del$wkend_dt)
+
+zz_rep_11_op1_del$wkend_dt = as.POSIXct(zz_rep_11_op1_del$wkend_dt , format="%j")
+
+zz_rep_11_op2_del = zz_rep_11_op1_del%>%
+  group_by(wkend_dt,X_id.deltaHr)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+zz_rep_11_op3_del = zz_rep_11_op2_del %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+zz_rep_11_2_op1_del = zz_rep_11_fbd_minus_ivd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Delhi NCR") %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_2_op1_del$wkend_dt = as.character(zz_rep_11_2_op1_del$wkend_dt)
+
+zz_rep_11_2_op1_del$wkend_dt = as.POSIXct(zz_rep_11_2_op1_del$wkend_dt , format="%j")
+
+zz_rep_11_2_op2_del = zz_rep_11_2_op1_del%>%
+  group_by(wkend_dt , X_id.deltaHr   )%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+
+zz_rep_11_2_op3_del = zz_rep_11_2_op2_del %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+##############Bombay###############
+
+
+zz_rep_11_op1_bom = zz_rep_11_ivd_minus_pd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Mumbai"
+
+         ) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_op1_bom$wkend_dt = as.character(zz_rep_11_op1_bom$wkend_dt)
+
+zz_rep_11_op1_bom$wkend_dt = as.POSIXct(zz_rep_11_op1_bom$wkend_dt , format="%j")
+
+zz_rep_11_op2_bom = zz_rep_11_op1_bom%>%
+  group_by(wkend_dt,X_id.deltaHr)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+zz_rep_11_op3_bom = zz_rep_11_op2_bom %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+zz_rep_11_2_op1_bom = zz_rep_11_fbd_minus_ivd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Mumbai") %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_2_op1_bom$wkend_dt = as.character(zz_rep_11_2_op1_bom$wkend_dt)
+
+zz_rep_11_2_op1_bom$wkend_dt = as.POSIXct(zz_rep_11_2_op1_bom$wkend_dt , format="%j")
+
+zz_rep_11_2_op2_bom = zz_rep_11_2_op1_bom%>%
+  group_by(wkend_dt , X_id.deltaHr   )%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+
+zz_rep_11_2_op3_bom = zz_rep_11_2_op2_bom %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+###############Bangalore#####################
+
+
+
+zz_rep_11_op1_blr = zz_rep_11_ivd_minus_pd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Bangalore"
+
+         ) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_op1_blr$wkend_dt = as.character(zz_rep_11_op1_blr$wkend_dt)
+
+zz_rep_11_op1_blr$wkend_dt = as.POSIXct(zz_rep_11_op1_blr$wkend_dt , format="%j")
+
+zz_rep_11_op2_blr = zz_rep_11_op1_blr%>%
+  group_by(wkend_dt,X_id.deltaHr)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+zz_rep_11_op3_blr = zz_rep_11_op2_blr %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+zz_rep_11_2_op1_blr = zz_rep_11_fbd_minus_ivd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Bangalore") %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_2_op1_blr$wkend_dt = as.character(zz_rep_11_2_op1_blr$wkend_dt)
+
+zz_rep_11_2_op1_blr$wkend_dt = as.POSIXct(zz_rep_11_2_op1_blr$wkend_dt , format="%j")
+
+zz_rep_11_2_op2_blr = zz_rep_11_2_op1_blr%>%
+  group_by(wkend_dt , X_id.deltaHr   )%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+
+zz_rep_11_2_op3_blr = zz_rep_11_2_op2_blr %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+
+#################Slide 16-22############################
+
+zz_rep_16_op1 = zz_rep_16_22%>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_16_op1$wkend_dt = as.character(zz_rep_16_op1$wkend_dt)
+
+zz_rep_16_op1$wkend_dt = as.POSIXct(zz_rep_16_op1$wkend_dt , format="%j")
+
+
+zz_rep_16_op1<- data.frame(lapply(zz_rep_16_op1, as.character), stringsAsFactors=FALSE)
+
+##zz_rep_16_op1$X_id.dl_cnc = as.character(zz_rep_16_op1$X_id.dl_cnc)
+Lane_matrix2<- data.frame(lapply(Lane_matrix2, as.character), stringsAsFactors=FALSE)
+
+
+zz_rep_16_op2 = left_join(zz_rep_16_op1, Lane_matrix2, by = c("X_id.dl_cnc" = "City")) %>%
+  distinct()
+
+zz_rep_16_op3 = zz_rep_16_op2%>%
+filter(X_id.dl_occ %in% c("Delhi NCR" , "Bangalore" , "Hyderabad" , "Jaipur"
+                            ,"Kolkata" , "Mumbai" , "Surat")) %>%
+  mutate(Tier = ifelse( X_id.dl_occ==X_id.dl_cnc , X_id.dl_occ , 
+                ifelse(Tier.Type %in%c("Metro" ) , "Metro" ,
+                ifelse(Tier.Type %in%c("Tier 1" , "Tier 2" ) , "Tier1/2","Others"
+          ))),
+         DDel = ifelse(as.numeric(X_id.dl_time)<4 ,X_id.dl_time,">3" ))
+
+zz_rep_16_op4 = zz_rep_16_op3%>%
+  group_by(X_id.dl_occ , Tier,  wkend_dt , DDel  )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum=cumsum(pct))
+
+
+
+zz_rep_16_op5_del = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Delhi NCR" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+
+zz_rep_16_op5_del =zz_rep_16_op5_del %>%
+rowwise() %>% 
+  mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+         Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+                  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+                  
+         )
+
+x <- c("DelhiNCR" , "Metro" , 
+       "Tier1/2" ,
+       "Others"   )
+
+# x <- c("Delhi NCR" , "Delhi NCR" ,"Delhi NCR" ,"Delhi NCR" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+zz_rep_16_op4_del = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Delhi NCR" , wkend_dt=="2015-03-28")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+
+
+zz_rep_16_op4_del = zz_rep_16_op4_del %>%
+  slice(match(x, Tier))
+
+zz_rep_16_op5_del = inner_join(zz_rep_16_op4_del,zz_rep_16_op5_del , by="Tier") 
+
+
+zz_rep_16_op5_bom = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Mumbai" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+  
+
+
+zz_rep_16_op5_bom =zz_rep_16_op5_bom %>%
+rowwise() %>% 
+  mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+         Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+                  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+                  
+         )
+
+
+x <- c("Mumbai" , "Metro" , 
+       "Tier1/2" ,
+       "Others"   )
+
+
+
+zz_rep_16_op4_bom = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Mumbai" , wkend_dt=="2015-03-28")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+zz_rep_16_op4_bom = zz_rep_16_op4_bom %>%
+  slice(match(x, Tier))
+
+zz_rep_16_op5_bom = inner_join(zz_rep_16_op4_bom,zz_rep_16_op5_bom , by="Tier") 
+
+
+# x <- c("Mumbai" , "Mumbai" ,"Mumbai" ,"Mumbai" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_blr = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Bangalore" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+
+zz_rep_16_op5_blr =zz_rep_16_op5_blr %>%
+rowwise() %>% 
+  mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+         Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+                  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+                  
+         )
+
+
+
+zz_rep_16_op4_blr = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Bangalore" , wkend_dt=="2015-03-28")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+x <- c("Bangalore" , "Metro" , 
+       "Tier1/2" ,
+       "Others"   )
+
+zz_rep_16_op4_blr = zz_rep_16_op4_blr %>%
+  slice(match(x, Tier))
+
+zz_rep_16_op5_blr = inner_join(zz_rep_16_op4_blr,zz_rep_16_op5_blr , by="Tier") 
+
+
+
+
+# x <- c("Bangalore" , "Bangalore" ,"Bangalore" ,"Bangalore" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_ccu = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Kolkata" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+
+zz_rep_16_op5_ccu =zz_rep_16_op5_ccu %>%
+rowwise() %>% 
+  mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+         Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+                  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+                  
+         )
+
+
+zz_rep_16_op4_ccu = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Kolkata" , wkend_dt=="2015-03-28")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+
+x <- c("Kolkata" , "Metro" , 
+       "Tier1/2" ,
+       "Others"   )
+
+zz_rep_16_op4_ccu = zz_rep_16_op4_ccu %>%
+  slice(match(x, Tier))
+
+
+zz_rep_16_op5_ccu = inner_join(zz_rep_16_op4_ccu,zz_rep_16_op5_ccu , by="Tier") 
+
+
+
+# 
+# x <- c("Kolkata" , "Kolkata" ,"Kolkata" ,"Kolkata" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_jai = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Jaipur" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+
+zz_rep_16_op5_jai =zz_rep_16_op5_jai %>%
+rowwise() %>% 
+  mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+         Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+                  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+                  
+         )
+
+
+zz_rep_16_op4_jai = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Jaipur" , wkend_dt=="2015-03-28")%>%
+  group_by(Tier)%>%
+  summarize(Volume= sum(sum))
+
+
+
+x <- c("Jaipur" , "Metro" , 
+       "Tier1/2" ,
+       "Others"   )
+
+zz_rep_16_op4_jai = zz_rep_16_op4_jai %>%
+  slice(match(x, Tier))
+
+
+zz_rep_16_op5_jai = inner_join(zz_rep_16_op4_jai,zz_rep_16_op5_jai , by="Tier") 
+
+
+
+# x <- c("Jaipur" , "Jaipur" ,"Jaipur" ,"Jaipur" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_stv = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Surat" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+
+zz_rep_16_op5_stv =zz_rep_16_op5_stv %>%
+rowwise() %>% 
+  mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+         Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+                  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+                  
+         )
+
+
+zz_rep_16_op4_stv = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Surat" , wkend_dt=="2015-03-28")%>%
+  group_by(Tier)%>%
+  summarize(Volume= sum(sum))
+
+
+x <- c("Surat" , "Metro" , 
+       "Tier1/2" ,
+       "Others"   )
+
+
+zz_rep_16_op4_stv = zz_rep_16_op4_stv %>%
+  slice(match(x, Tier))
+
+
+
+
+zz_rep_16_op5_stv = inner_join(zz_rep_16_op4_stv,zz_rep_16_op5_stv , by="Tier") 
+
+
+
+
+# x <- c("Surat" , "Surat" ,"Surat" ,"Surat" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_hyd = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Hyderabad" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+
+zz_rep_16_op5_hyd =zz_rep_16_op5_hyd %>%
+rowwise() %>% 
+  mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+         Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+                  as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+                  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+                  
+         )
+
+
+
+zz_rep_16_op4_hyd = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Hyderabad" , wkend_dt=="2015-03-28")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+
+x <- c("Hyderabad" , "Metro" , 
+       "Tier1/2" ,
+       "Others"   )
+
+zz_rep_16_op4_hyd = zz_rep_16_op4_hyd %>%
+  slice(match(x, Tier))
+
+
+zz_rep_16_op5_hyd = inner_join(zz_rep_16_op4_hyd,zz_rep_16_op5_hyd , by="Tier") 
+
+
+
+
+# x <- c("Hyderabad" , "Hyderabad" ,"Hyderabad" ,"Hyderabad" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+##select(zz_rep_24 , X_id.dl_cs_ss)%>% distinct()
+
+zz_rep_24_op1 = zz_rep_24%>%
+  filter(X_id.dl_cnc %in% c("Delhi NCR" , "Bangalore" , "Hyderabad" , "Jaipur"
+                            ,"Chennai"  , "Pune","Kolkata" , "Mumbai" , "Surat" , "Ahmedabad"))%>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss %in% c("RTO" , "Returned") , "RTO" , "Other")
+         )
+
+zz_rep_24_op1$wkend_dt = as.character(zz_rep_24_op1$wkend_dt)
+
+zz_rep_24_op1$wkend_dt = as.POSIXct(zz_rep_24_op1$wkend_dt , format="%j")
+
+zz_rep_24_op2 = zz_rep_24_op1 %>%
+  group_by(City = X_id.dl_cnc , wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="RTO")
+
+
+zz_rep_24_op3 = zz_rep_24_op2 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(City~wkend_dt  ,value.var="pct")
+  
+
+zz_rep_24_op2 = zz_rep_24_op2 %>%
+  group_by(City)%>%
+  summarise(sum=sum(sum))%>%
+  arrange(desc(sum))
+  
+zz_rep_24_op4 = inner_join(zz_rep_24_op2 , zz_rep_24_op3 , by="City")
+
+
+
+
+zz_rep_24_op1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon , X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss %in% c("RTO" , "Returned") , "RTO" , "Other")
+         )
+
+
+zz_rep_24_op1$wkend_dt = as.character(zz_rep_24_op1$wkend_dt)
+
+zz_rep_24_op1$wkend_dt = as.POSIXct(zz_rep_24_op1$wkend_dt , format="%j")
+
+zz_rep_24_op22 = zz_rep_24_op1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="RTO")
+
+zz_rep_24_op23 = zz_rep_24_op22 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+################ DElivered %age######################
+
+zz_rep_24_op1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon , X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss=="Delivered" , "Delivered" , "Other")
+         )
+
+
+zz_rep_24_op1$wkend_dt = as.character(zz_rep_24_op1$wkend_dt)
+
+zz_rep_24_op1$wkend_dt = as.POSIXct(zz_rep_24_op1$wkend_dt , format="%j")
+
+zz_rep_24_op22 = zz_rep_24_op1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="Delivered")
+
+zz_rep_24_op24 = zz_rep_24_op22 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")%>%
+    dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+              `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+              `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+  
+
+
+zz_district_pin_op1= zz_district_pin %>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_district_pin_op1$wkend_dt = as.character(zz_district_pin_op1$wkend_dt)
+
+zz_district_pin_op1$wkend_dt= as.POSIXct(zz_district_pin_op1$wkend_dt , format="%j")
+
+zz_district_pin_op1=zz_district_pin_op1%>%
+  group_by(wkend_dt)%>%
+  summarize(sum=sum(dl_count))
+  
+
+cl_zn_rep_10_pd$X_id.pd = as.POSIXct(as.character(cl_zn_rep_10_pd$X_id.pd) , 
+                                         format="%Y-%m-%dT%H:%M:%S")
+
+
+cl_zn_rep_10_pd_op1 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn=="A")%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_op1 = cl_zn_rep_10_pd_op1%>%
+  filter(pd_hr<10)%>%  
+  mutate(sdd_flag = ifelse(X_id.fddmpd==0,1,0
+                             
+    
+    ))
+
+cl_zn_rep_10_pd_op1 = cl_zn_rep_10_pd_op1%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_op1$wkend_dt = as.character(cl_zn_rep_10_pd_op1$wkend_dt)
+
+cl_zn_rep_10_pd_op1$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_op1$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_op2 = cl_zn_rep_10_pd_op1%>%
+  group_by( wkend_dt , sdd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_op3 = cl_zn_rep_10_pd_op2%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(sdd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(sdd_flag==0)%>%
+  dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+       `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+ 
+  
+################################3
+
+
+cl_zn_rep_10_pd_op11 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn %in% c("B" , "C"))%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_op11 = cl_zn_rep_10_pd_op11%>%
+  filter(pd_hr<22)%>%
+  mutate(ndd_flag = ifelse(X_id.fddmpd<2,1,0
+      ))
+
+
+
+cl_zn_rep_10_pd_op11 = cl_zn_rep_10_pd_op11%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_op11$wkend_dt = as.character(cl_zn_rep_10_pd_op11$wkend_dt)
+
+cl_zn_rep_10_pd_op11$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_op11$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_op112 = cl_zn_rep_10_pd_op11%>%
+  group_by( wkend_dt , ndd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_op113 = cl_zn_rep_10_pd_op112%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(ndd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(ndd_flag==0)%>%
+  dplyr::rename(`02-14` = `2015-02-14`,
+              `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+       `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+ 
+  ################Client####################
+
+cl_cs_pt_rep_13_10_3_zn_op1 = cl_cs_pt_rep_13_10_3_zn%>%
+  filter(X_id.cl %in% c("Flipkart" , "Snapdeal" , 
+                        "Myntra" , "HomeShop18" , 
+                        "ShopClues" , "Askmebazaar" ,"Getitbazaar",
+                        "Paytm" , "ShopClues" , "HomeShop18-FOS"))%>%
+  mutate(Month = as.integer(strftime(strptime(X_id.dl_date ,  "%j") , "%m")))
+  
+  
+cl_max_month = max(cl_cs_pt_rep_13_10_3_zn_op1$Month)
+
+cl_cs_pt_rep_13_10_3_zn_op2 =cl_cs_pt_rep_13_10_3_zn_op1%>%
+  filter(Month==cl_max_month ,
+X_id.dl_pt %in% c("COD" , "Pre-paid" , "Pickup" , "Cash"))%>%
+  mutate(payment_type = ifelse(X_id.dl_pt %in% c("COD" , "Pre-paid") , "Forward",
+                               ifelse(X_id.dl_pt %in% c("Pickup") , "Reverse",
+                                      ifelse(X_id.dl_pt %in% c("Cash") , "Cash","NA"
+                                             
+                                      ))),
+         Client = ifelse( X_id.cl %in% c("HomeShop18" , "HomeShop18-FOS"),
+                          "HomeShop18" ,
+                          ifelse ( X_id.cl %in% c("Askmebazaar" ,"Getitbazaar")
+                                   ,"Askmebazaar",
+                          as.character(X_id.cl) )
+           
+           )
+         
+         
+         ) %>%
+  group_by ( Client, payment_type) %>%
+  summarise(Actual_Volume = sum(dl_count)) 
+  
+  ##arrange(wkend_dt)
+
+
+##zz_rep_13_10_3_op3$wkend_dt = as.character(zz_rep_13_10_3_op3$wkend_dt)
+
+
+cl_cs_pt_rep_13_10_3_zn_op2 = dcast(cl_cs_pt_rep_13_10_3_zn_op2,
+            Client~payment_type  , value.var="Actual_Volume")
+
+cl_cs_pt_rep_13_10_3_zn_op2 = cl_cs_pt_rep_13_10_3_zn_op2%>%
+  mutate(Reverse = ifelse(is.na(Reverse),0,Reverse) )%>%
+  rowwise()%>%
+  mutate(Actual_Total_MTD = sum(Forward,  Reverse))
+Client_plan$Client = as.character(Client_plan$Client )
+cl_cs_pt_rep_13_10_3_zn_op2$Client = as.character(cl_cs_pt_rep_13_10_3_zn_op2$Client )
+
+cl_cs_pt_rep_13_10_3_zn_op3 = left_join(cl_cs_pt_rep_13_10_3_zn_op2,
+                                         Client_plan , by="Client")%>%
+  mutate(Gap =  Actual_Total_MTD -as.numeric(Plan_total) )
+
+cl_cs_pt_rep_13_10_3_zn_op3 = cl_cs_pt_rep_13_10_3_zn_op3%>%
+mutate(Gap_perc = round((100*Gap/Plan_total),1))  
+##################D0 , D1 , D2 ###########################3
+cl_zn_rep_10_pd_dl1_1 = cl_zn_rep_10_pd%>%
+  filter(X_id.cl %in% c("Flipkart"))%>%
+  mutate(pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_dl1_2 = cl_zn_rep_10_pd_dl1_1%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_dl1_2$wkend_dt = as.character(cl_zn_rep_10_pd_dl1_2$wkend_dt)
+
+cl_zn_rep_10_pd_dl1_2$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_dl1_2$wkend_dt , format="%j")
+
+
+cl_zn_rep_10_pd_dl1_3 = cl_zn_rep_10_pd_dl1_2%>%
+  group_by(wkend_dt , X_id.fddmpd)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct = sum*100/sum(sum))%>%
+  mutate(cumsum = cumsum(pct))%>%
+  filter(X_id.fddmpd<=3)
+
+cl_zn_rep_10_pd_dl1_3 = cl_zn_rep_10_pd_dl1_3%>%
+  dcast(X_id.fddmpd~wkend_dt,value.var="cumsum")%>%
+  dplyr::rename(Speed = X_id.fddmpd )
+
+
+cl_zn_rep_10_pd_dl2_1 = cl_zn_rep_10_pd%>%
+  filter(X_id.cl %in% c("Snapdeal"))%>%
+  mutate(pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_dl2_2 = cl_zn_rep_10_pd_dl2_1%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_dl2_2$wkend_dt = as.character(cl_zn_rep_10_pd_dl2_2$wkend_dt)
+
+cl_zn_rep_10_pd_dl2_2$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_dl2_2$wkend_dt , format="%j")
+
+
+cl_zn_rep_10_pd_dl2_3 = cl_zn_rep_10_pd_dl2_2%>%
+  group_by(wkend_dt , X_id.fddmpd)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct = sum*100/sum(sum))%>%
+  mutate(cumsum = cumsum(pct))%>%
+  filter(X_id.fddmpd<=3)
+
+cl_zn_rep_10_pd_dl2_3 = cl_zn_rep_10_pd_dl2_3%>%
+  dcast(X_id.fddmpd~wkend_dt,value.var="cumsum")%>%
+  dplyr::rename(Speed = X_id.fddmpd)
+
+
+
+
+
+cl_zn_rep_10_pd_dl3_1 = cl_zn_rep_10_pd%>%
+  filter(X_id.cl %in% c("HomeShop18" , "HomeShop18-FOS"))%>%
+  mutate(pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_dl3_2 = cl_zn_rep_10_pd_dl3_1%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_dl3_2$wkend_dt = as.character(cl_zn_rep_10_pd_dl3_2$wkend_dt)
+
+cl_zn_rep_10_pd_dl3_2$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_dl3_2$wkend_dt , format="%j")
+
+
+cl_zn_rep_10_pd_dl3_3 = cl_zn_rep_10_pd_dl3_2%>%
+  group_by(wkend_dt , X_id.fddmpd)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct = sum*100/sum(sum))%>%
+  mutate(cumsum = cumsum(pct))%>%
+  filter(X_id.fddmpd<=3)
+
+cl_zn_rep_10_pd_dl3_3 = cl_zn_rep_10_pd_dl3_3%>%
+  dcast(X_id.fddmpd~wkend_dt,value.var="cumsum")%>%
+  dplyr::rename(Speed = X_id.fddmpd)
+
+###############Client Wise Return Rate and Delivery Efficieny#########
+
+
+########FLIPKART
+
+cl_rr_1_1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.cl %in% c("Flipkart"),
+         X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss %in% c("RTO" , "Returned") , "RTO" , "Other")
+         )
+
+
+cl_rr_1_1$wkend_dt = as.character(cl_rr_1_1$wkend_dt)
+
+cl_rr_1_1$wkend_dt = as.POSIXct(cl_rr_1_1$wkend_dt , format="%j")
+
+cl_rr_1_2 = cl_rr_1_1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="RTO")
+
+cl_rr_1_3 = cl_rr_1_2 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+################ DElivered %age######################
+
+cl_rr_1_1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon ,  X_id.cl %in% c("Flipkart"),
+         X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss=="Delivered" , "Delivered" , "Other")
+         )
+
+
+cl_rr_1_1$wkend_dt = as.character(cl_rr_1_1$wkend_dt)
+
+cl_rr_1_1$wkend_dt = as.POSIXct(cl_rr_1_1$wkend_dt , format="%j")
+
+cl_rr_1_22 = cl_rr_1_1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="Delivered")
+
+cl_rr_1_24 = cl_rr_1_22 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+################SNAPDEAL
+
+
+
+cl_rr_2_1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.cl %in% c("Snapdeal"),
+         X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss %in% c("RTO" , "Returned") , "RTO" , "Other")
+         )
+
+
+cl_rr_2_1$wkend_dt = as.character(cl_rr_2_1$wkend_dt)
+
+cl_rr_2_1$wkend_dt = as.POSIXct(cl_rr_2_1$wkend_dt , format="%j")
+
+cl_rr_2_2 = cl_rr_2_1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="RTO")
+
+cl_rr_2_3 = cl_rr_2_2 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+################ DElivered %age######################
+
+cl_rr_2_1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon ,  X_id.cl %in% c("Snapdeal"),
+         X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss=="Delivered" , "Delivered" , "Other")
+         )
+
+
+cl_rr_2_1$wkend_dt = as.character(cl_rr_2_1$wkend_dt)
+
+cl_rr_2_1$wkend_dt = as.POSIXct(cl_rr_2_1$wkend_dt , format="%j")
+
+cl_rr_2_22 = cl_rr_2_1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="Delivered")
+
+cl_rr_2_24 = cl_rr_2_22 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+
+##############Hs18
+
+
+
+cl_rr_3_1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.cl %in% c("HomeShop18" , "HomeShop18-FOS"),
+         X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss %in% c("RTO" , "Returned") , "RTO" , "Other")
+         )
+
+
+cl_rr_3_1$wkend_dt = as.character(cl_rr_3_1$wkend_dt)
+
+cl_rr_3_1$wkend_dt = as.POSIXct(cl_rr_3_1$wkend_dt , format="%j")
+
+cl_rr_3_2 = cl_rr_3_1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="RTO")
+
+cl_rr_3_3 = cl_rr_3_2 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+################ DElivered %age######################
+
+cl_rr_3_1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon ,  X_id.cl %in% c("HomeShop18" , "HomeShop18-FOS"),
+         X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss=="Delivered" , "Delivered" , "Other")
+         )
+
+
+cl_rr_3_1$wkend_dt = as.character(cl_rr_3_1$wkend_dt)
+
+cl_rr_3_1$wkend_dt = as.POSIXct(cl_rr_3_1$wkend_dt , format="%j")
+
+cl_rr_3_22 = cl_rr_3_1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="Delivered")
+
+cl_rr_3_24 = cl_rr_3_22 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+
+
+##################Client - NDD SDD Flags
+
+#######FLipkart
+
+cl_zn_rep_10_pd_cl11 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn=="A" , X_id.cl %in% c("Flipkart") )%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_cl11 = cl_zn_rep_10_pd_cl11%>%
+  filter(pd_hr<10)%>%  
+  mutate(sdd_flag = ifelse(X_id.fddmpd==0,1,0
+                             
+    
+    ))
+
+cl_zn_rep_10_pd_cl11 = cl_zn_rep_10_pd_cl11%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_cl11$wkend_dt = as.character(cl_zn_rep_10_pd_cl11$wkend_dt)
+
+cl_zn_rep_10_pd_cl11$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_cl11$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_cl12 = cl_zn_rep_10_pd_cl11%>%
+  group_by( wkend_dt , sdd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_cl13 = cl_zn_rep_10_pd_cl12%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(sdd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(sdd_flag==0)
+  
+################################3
+
+
+cl_zn_rep_10_pd_cl11 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn %in% c("B" , "C") ,  X_id.cl %in% c("Flipkart"))%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_cl11 = cl_zn_rep_10_pd_cl11%>%
+  filter(pd_hr<22)%>%
+  mutate(ndd_flag = ifelse(X_id.fddmpd<2,1,0
+      ))
+
+
+
+cl_zn_rep_10_pd_cl11 = cl_zn_rep_10_pd_cl11%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_cl11$wkend_dt = as.character(cl_zn_rep_10_pd_cl11$wkend_dt)
+
+cl_zn_rep_10_pd_cl11$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_cl11$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_cl12 = cl_zn_rep_10_pd_cl11%>%
+  group_by( wkend_dt , ndd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_cl113 = cl_zn_rep_10_pd_cl12%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(ndd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(ndd_flag==0)
+
+
+###############Snapdeal
+
+
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn=="A" , X_id.cl %in% c("Snapdeal") )%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd_cl21%>%
+  filter(pd_hr<10)%>%  
+  mutate(sdd_flag = ifelse(X_id.fddmpd==0,1,0
+                             
+    
+    ))
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd_cl21%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_cl21$wkend_dt = as.character(cl_zn_rep_10_pd_cl21$wkend_dt)
+
+cl_zn_rep_10_pd_cl21$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_cl21$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_cl22 = cl_zn_rep_10_pd_cl21%>%
+  group_by( wkend_dt , sdd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_cl23 = cl_zn_rep_10_pd_cl22%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(sdd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(sdd_flag==0)
+  
+################################3
+
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn %in% c("B" , "C") ,  X_id.cl %in% c("Snapdeal"))%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd_cl21%>%
+  filter(pd_hr<22)%>%
+  mutate(ndd_flag = ifelse(X_id.fddmpd<2,1,0
+      ))
+
+
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd_cl21%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_cl21$wkend_dt = as.character(cl_zn_rep_10_pd_cl21$wkend_dt)
+
+cl_zn_rep_10_pd_cl21$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_cl21$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_cl22 = cl_zn_rep_10_pd_cl21%>%
+  group_by( wkend_dt , ndd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_cl213 = cl_zn_rep_10_pd_cl22%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(ndd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(ndd_flag==0)
+
+
+##############HS18
+
+
+
+cl_zn_rep_10_pd_cl31 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn=="A" , X_id.cl %in% c("HomeShop18" , "HomeShop18-FOS") )%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_cl31 = cl_zn_rep_10_pd_cl31%>%
+  filter(pd_hr<10)%>%  
+  mutate(sdd_flag = ifelse(X_id.fddmpd==0,1,0
+                             
+    
+    ))
+
+cl_zn_rep_10_pd_cl31 = cl_zn_rep_10_pd_cl31%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_cl31$wkend_dt = as.character(cl_zn_rep_10_pd_cl31$wkend_dt)
+
+cl_zn_rep_10_pd_cl31$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_cl31$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_cl32 = cl_zn_rep_10_pd_cl31%>%
+  group_by( wkend_dt , sdd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_cl33 = cl_zn_rep_10_pd_cl32%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(sdd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(sdd_flag==0)
+  
+################################3
+
+
+cl_zn_rep_10_pd_cl31 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn %in% c("B" , "C") ,  X_id.cl %in% c("HomeShop18" , "HomeShop18-FOS"))%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_cl31 = cl_zn_rep_10_pd_cl31%>%
+  filter(pd_hr<22)%>%
+  mutate(ndd_flag = ifelse(X_id.fddmpd<2,1,0
+      ))
+
+
+
+cl_zn_rep_10_pd_cl31 = cl_zn_rep_10_pd_cl31%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_cl31$wkend_dt = as.character(cl_zn_rep_10_pd_cl31$wkend_dt)
+
+cl_zn_rep_10_pd_cl31$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_cl31$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_cl32 = cl_zn_rep_10_pd_cl31%>%
+  group_by( wkend_dt , ndd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_cl313 = cl_zn_rep_10_pd_cl32%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(ndd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(ndd_flag==0)
+
+## 2015-02-08T00:03:46.924Z
+```
+
+
+
+
+## Performance Review
+
+
+# Overall Volume Metrics
+
+---
+
+# Plan v/s Actual - Volumes
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_13_10_3_op8, big.interval = 3,big.mark=",")),type="html", include.rownames=FALSE)
+
+```
+
+
+---
+# Plan v/s Actual - Origin
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_4_5_op8),type="html", include.rownames=FALSE)
+
+
+```
+
+---
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_4_5_op5_5, big.interval = 3,big.mark=",")),type="html", include.rownames=FALSE)
+
+
+```
+
+
+---
+
+# Origin-wise Volumes
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_5_op5[1:10,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_5_op5[11:20,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+# Destination-wise Volumes
+### Metro Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_metro33, big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+
+# Destination-wise Volumes
+### Tier 1 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t1_3[1:10,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+
+# Destination-wise Volumes
+### Tier 1 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t1_3[11:16,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+```
+
+---
+
+# Destination-wise Volumes
+### Tier 2/3 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t2_3[1:10,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+
+# Destination-wise Volumes
+### Tier 2/3 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t2_3[11:20,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+
+# Destination-wise Volumes
+### Tier 2/3 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t2_3[20:25,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+```
+
+---
+
+# Key Operating Metrics
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_10_op22),type="html"  , include.rownames=FALSE)
+```
+
+
+# Delivery Efficiency : 
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_24_op24),type="html"  , include.rownames=FALSE)
+```
+
+
+
+# P2D Breach % :
+Without NSL :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_10_p2_op2),type="html"  , include.rownames=FALSE)
+```
+With NSL:
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_10_p3_op2),type="html"  , include.rownames=FALSE)
+
+```
+
+---
+
+SDD Breach(Zone A)
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_op3),type="html"  , include.rownames=FALSE)
+
+```
+
+NDD Breach(Zone B/C)
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_op113),type="html"  , include.rownames=FALSE)
+
+```
+
+---
+
+
+Processing :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_op3),type="html"  , include.rownames=FALSE)
+```
+
+Bagging :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_2_op3),type="html"  , include.rownames=FALSE)
+```
+
+---
+# Cost
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_operating_overall),type="html"  , include.rownames=FALSE)
+```
+
+
+---
+
+# Key Operating Metrics
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(lh_review[1:8,]),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(lh_review[9:16,]),type="html"  , include.rownames=FALSE)
+```
+
+
+
+---
+
+
+# Key Operating Metrics
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_ops_return),type="html"  , include.rownames=FALSE )
+```
+
+
+---
+
+# Key Operating Metrics
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_ops_failure[1:9,]),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+# Key Operating Metrics
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_ops_failure[10:16,]),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+## Lane Metrics - Forward
+
+---
+
+# Lane Metrics ex-DEL
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_del[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+
+```
+
+---
+
+# Lane Metrics ex-DEL
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_del[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-BOM
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_bom[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-BOM
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_bom[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+
+---
+
+# Lane Metrics ex-BLR
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_blr[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-BLR
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_blr[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-CCU
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_ccu[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-CCU
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_ccu[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-JAI
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_jai[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-JAI
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_jai[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-STV
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_stv[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-STV
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_stv[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-HYD
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_hyd[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-HYD
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_hyd[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+----
+
+## Lane Metrics - Returns/Reverse
+
+---
+# Lane Metrics - Return Rate
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_24_op4, big.interval = 3,big.mark=",")), 
+type="html"    , include.rownames=FALSE)
+```
+
+
+
+---
+
+## Station Metrics - Processing
+
+---
+
+# Processing Metrics - DEL
+
+Processing :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_op3_del),type="html"  , include.rownames=FALSE)
+```
+
+Bagging :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_2_op3_del),type="html"  , include.rownames=FALSE)
+```
+
+---
+#cost
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_operating_del),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+# Processing Metrics - BOM
+Processing :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_op3_bom),type="html"  , include.rownames=FALSE)
+```
+
+Bagging :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_2_op3_bom),type="html"  , include.rownames=FALSE)
+```
+
+---
+#cost
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_operating_del),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+# Processing Metrics - BLR
+Processing :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_op3_blr),type="html"  , include.rownames=FALSE)
+```
+
+Bagging :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_2_op3_blr),type="html"  , include.rownames=FALSE)
+```
+
+---
+#cost
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_operating_del),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+## Client Metrics
+
+---
+# Volume MTD
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(cl_cs_pt_rep_13_10_3_zn_op3, big.interval = 3,big.mark=",")),type="html"  , include.rownames=FALSE)
+
+```
+
+
+---
+## Key Metrics - Flipkart
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_dl1_3),type="html"  , include.rownames=FALSE)
+```
+
+Delivery Efficiency :
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_1_24),type="html"  , include.rownames=FALSE)
+```
+
+SDD Breach :
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl13),type="html"  , include.rownames=FALSE)
+```
+
+NDD Breach :
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl113),type="html"  , include.rownames=FALSE)
+```
+
+
+---
+Return Rate :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_1_3),type="html"  , include.rownames=FALSE)
+```
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(flipkart[1:6,]),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(flipkart[7:17,]),type="html"  , include.rownames=FALSE)
+```
+
+---
+## Key Metrics - Snapdeal
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_dl2_3),type="html"  , include.rownames=FALSE)
+```
+
+Delivery Efficiency :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_2_24),type="html"  , include.rownames=FALSE)
+```
+
+SDD Breach :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl23),type="html"  , include.rownames=FALSE)
+```
+NDD Breach :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl213),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+Return Rate:
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_2_3),type="html"  , include.rownames=FALSE)
+```
+
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(snapdeal[1:6 , ]),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(snapdeal[7:17 , ]),type="html"  , include.rownames=FALSE)
+```
+
+---
+## Key Metrics - HS18
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_dl3_3),type="html"  , include.rownames=FALSE)
+```
+Delivery Efficiency :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_3_24),type="html"  , include.rownames=FALSE)
+```
+
+SDD Breach:
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl33),type="html"  , include.rownames=FALSE)
+```
+NDD Breach:
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl313),type="html"  , include.rownames=FALSE)
+```
+
+--- 
+Return Rate :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_3_3),type="html"  , include.rownames=FALSE )
+```
+ 
+
+ 
+```{r ,echo=FALSE , results='asis'}
+print(xtable(hs18[1:6,]),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(hs18[7:17,]),type="html"  , include.rownames=FALSE)
+```

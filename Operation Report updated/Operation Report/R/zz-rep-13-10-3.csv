@@ -1,0 +1,1098 @@
+_id.dl_date,_id.dl_pt,_id.dl_cs_ss,dl_count
+32,"COD","Delivered",25342.0
+32,"COD","In Transit",32.0
+32,"COD","LOST",46.0
+32,"COD","Not Picked",8.0
+32,"COD","Pending",4.0
+32,"COD","RTO",6070.0
+32,"COD","Returned",120.0
+32,"Cash","Closed",48.0
+32,"Cash","Collected",48.0
+32,"Pickup","Canceled",3.0
+32,"Pickup","Closed",9.0
+32,"Pickup","DTO",75.0
+32,"Pickup","Picked Up",1.0
+32,"Pre-paid","Delivered",5603.0
+32,"Pre-paid","In Transit",1.0
+32,"Pre-paid","LOST",1.0
+32,"Pre-paid","Not Picked",1.0
+32,"Pre-paid","RTO",88.0
+32,"Pre-paid","Returned",29.0
+32,"REPL","DTO",45.0
+32,"REPL","Picked Up",2.0
+32,"REPL","RTO",2.0
+33,"COD","Delivered",38379.0
+33,"COD","In Transit",32.0
+33,"COD","LOST",47.0
+33,"COD","Not Picked",132.0
+33,"COD","Pending",11.0
+33,"COD","RTO",7641.0
+33,"COD","Returned",220.0
+33,"Cash","Closed",99.0
+33,"Cash","Collected",193.0
+33,"Pickup","Canceled",26.0
+33,"Pickup","Closed",757.0
+33,"Pickup","DTO",4152.0
+33,"Pickup","LOST",4.0
+33,"Pickup","Picked Up",52.0
+33,"Pickup","Scheduled",14.0
+33,"Pre-paid","Delivered",18351.0
+33,"Pre-paid","In Transit",3.0
+33,"Pre-paid","LOST",13.0
+33,"Pre-paid","Not Picked",38.0
+33,"Pre-paid","Pending",6.0
+33,"Pre-paid","RTO",655.0
+33,"Pre-paid","Returned",32.0
+33,"REPL","DTO",32.0
+33,"REPL","RTO",4.0
+34,"COD","Delivered",52740.0
+34,"COD","In Transit",49.0
+34,"COD","LOST",72.0
+34,"COD","Not Picked",28.0
+34,"COD","Pending",10.0
+34,"COD","RTO",12029.0
+34,"COD","Returned",407.0
+34,"Cash","Closed",129.0
+34,"Cash","Collected",222.0
+34,"Pickup","Canceled",11.0
+34,"Pickup","Closed",611.0
+34,"Pickup","DTO",3058.0
+34,"Pickup","LOST",7.0
+34,"Pickup","Picked Up",43.0
+34,"Pickup","Scheduled",3.0
+34,"Pre-paid","Delivered",22977.0
+34,"Pre-paid","In Transit",7.0
+34,"Pre-paid","LOST",7.0
+34,"Pre-paid","Not Picked",6.0
+34,"Pre-paid","RTO",458.0
+34,"Pre-paid","Returned",64.0
+34,"REPL","DTO",48.0
+34,"REPL","LOST",1.0
+34,"REPL","RTO",6.0
+35,"COD","Delivered",39302.0
+35,"COD","In Transit",136.0
+35,"COD","LOST",45.0
+35,"COD","Not Picked",124.0
+35,"COD","Pending",4.0
+35,"COD","RTO",8864.0
+35,"COD","Returned",333.0
+35,"Cash","Closed",96.0
+35,"Cash","Collected",211.0
+35,"Pickup","Canceled",31.0
+35,"Pickup","Closed",887.0
+35,"Pickup","DTO",4790.0
+35,"Pickup","LOST",3.0
+35,"Pickup","Picked Up",52.0
+35,"Pickup","Scheduled",11.0
+35,"Pre-paid","Delivered",16241.0
+35,"Pre-paid","In Transit",13.0
+35,"Pre-paid","LOST",7.0
+35,"Pre-paid","Not Picked",17.0
+35,"Pre-paid","Pending",5.0
+35,"Pre-paid","RTO",481.0
+35,"Pre-paid","Returned",55.0
+35,"REPL","DTO",54.0
+35,"REPL","RTO",11.0
+36,"COD","Delivered",37418.0
+36,"COD","In Transit",67.0
+36,"COD","LOST",74.0
+36,"COD","Not Picked",65.0
+36,"COD","Pending",6.0
+36,"COD","RTO",9154.0
+36,"COD","Returned",269.0
+36,"Cash","Closed",120.0
+36,"Cash","Collected",161.0
+36,"Pickup","Canceled",7.0
+36,"Pickup","Closed",545.0
+36,"Pickup","DTO",1754.0
+36,"Pickup","Picked Up",39.0
+36,"Pre-paid","Delivered",17107.0
+36,"Pre-paid","In Transit",8.0
+36,"Pre-paid","LOST",18.0
+36,"Pre-paid","Not Picked",8.0
+36,"Pre-paid","Pending",1.0
+36,"Pre-paid","RTO",741.0
+36,"Pre-paid","Returned",46.0
+36,"REPL","DTO",41.0
+36,"REPL","Dispatched",1.0
+36,"REPL","RTO",6.0
+37,"COD","Delivered",38940.0
+37,"COD","In Transit",51.0
+37,"COD","LOST",101.0
+37,"COD","Not Picked",92.0
+37,"COD","Pending",4.0
+37,"COD","RTO",9417.0
+37,"COD","Returned",349.0
+37,"Cash","Closed",103.0
+37,"Cash","Collected",142.0
+37,"Pickup","Canceled",11.0
+37,"Pickup","Closed",449.0
+37,"Pickup","DTO",2351.0
+37,"Pickup","LOST",6.0
+37,"Pickup","Picked Up",20.0
+37,"Pickup","Scheduled",4.0
+37,"Pre-paid","Delivered",15295.0
+37,"Pre-paid","In Transit",6.0
+37,"Pre-paid","LOST",26.0
+37,"Pre-paid","Not Picked",35.0
+37,"Pre-paid","RTO",473.0
+37,"Pre-paid","Returned",45.0
+37,"REPL","DTO",46.0
+37,"REPL","LOST",1.0
+37,"REPL","RTO",7.0
+38,"COD","Delivered",29665.0
+38,"COD","In Transit",10.0
+38,"COD","LOST",77.0
+38,"COD","Not Picked",34.0
+38,"COD","Pending",3.0
+38,"COD","RTO",6960.0
+38,"COD","Returned",405.0
+38,"Cash","Closed",84.0
+38,"Cash","Collected",102.0
+38,"Pickup","Canceled",18.0
+38,"Pickup","Closed",599.0
+38,"Pickup","DTO",2597.0
+38,"Pickup","LOST",3.0
+38,"Pickup","Picked Up",36.0
+38,"Pickup","Scheduled",8.0
+38,"Pre-paid","Delivered",10209.0
+38,"Pre-paid","In Transit",2.0
+38,"Pre-paid","LOST",18.0
+38,"Pre-paid","Not Picked",4.0
+38,"Pre-paid","RTO",350.0
+38,"Pre-paid","Returned",66.0
+38,"REPL","DTO",83.0
+38,"REPL","Picked Up",1.0
+38,"REPL","RTO",9.0
+39,"COD","Delivered",21980.0
+39,"COD","In Transit",21.0
+39,"COD","LOST",32.0
+39,"COD","Not Picked",2.0
+39,"COD","Pending",3.0
+39,"COD","RTO",5958.0
+39,"COD","Returned",267.0
+39,"Cash","Closed",52.0
+39,"Cash","Collected",134.0
+39,"Pickup","Canceled",9.0
+39,"Pickup","Closed",171.0
+39,"Pickup","DTO",1211.0
+39,"Pickup","LOST",1.0
+39,"Pickup","Picked Up",6.0
+39,"Pickup","Scheduled",1.0
+39,"Pre-paid","Delivered",4943.0
+39,"Pre-paid","In Transit",2.0
+39,"Pre-paid","LOST",9.0
+39,"Pre-paid","Not Picked",5.0
+39,"Pre-paid","RTO",89.0
+39,"Pre-paid","Returned",32.0
+39,"REPL","DTO",59.0
+39,"REPL","Picked Up",1.0
+39,"REPL","RTO",5.0
+40,"COD","Delivered",47110.0
+40,"COD","In Transit",161.0
+40,"COD","LOST",55.0
+40,"COD","Not Picked",113.0
+40,"COD","Pending",7.0
+40,"COD","RTO",12593.0
+40,"COD","Returned",362.0
+40,"Cash","Closed",85.0
+40,"Cash","Collected",142.0
+40,"Pickup","Canceled",17.0
+40,"Pickup","Closed",654.0
+40,"Pickup","DTO",2671.0
+40,"Pickup","LOST",4.0
+40,"Pickup","Picked Up",47.0
+40,"Pickup","Scheduled",8.0
+40,"Pre-paid","Delivered",15841.0
+40,"Pre-paid","In Transit",17.0
+40,"Pre-paid","LOST",10.0
+40,"Pre-paid","Not Picked",20.0
+40,"Pre-paid","RTO",582.0
+40,"Pre-paid","Returned",22.0
+40,"REPL","DTO",25.0
+40,"REPL","RTO",7.0
+41,"COD","Delivered",42966.0
+41,"COD","In Transit",14.0
+41,"COD","LOST",72.0
+41,"COD","Not Picked",125.0
+41,"COD","Pending",7.0
+41,"COD","RTO",10972.0
+41,"COD","Returned",319.0
+41,"Cash","Closed",96.0
+41,"Cash","Collected",125.0
+41,"Pickup","Canceled",279.0
+41,"Pickup","Closed",2379.0
+41,"Pickup","DTO",2471.0
+41,"Pickup","LOST",3.0
+41,"Pickup","Picked Up",62.0
+41,"Pickup","Scheduled",33.0
+41,"Pre-paid","Delivered",18359.0
+41,"Pre-paid","Dispatched",1.0
+41,"Pre-paid","LOST",9.0
+41,"Pre-paid","Not Picked",13.0
+41,"Pre-paid","Pending",1.0
+41,"Pre-paid","RTO",578.0
+41,"Pre-paid","Returned",15.0
+41,"REPL","DTO",67.0
+41,"REPL","Picked Up",1.0
+41,"REPL","RTO",7.0
+42,"COD","Delivered",34348.0
+42,"COD","In Transit",5.0
+42,"COD","LOST",71.0
+42,"COD","Not Picked",126.0
+42,"COD","Pending",3.0
+42,"COD","RTO",8734.0
+42,"COD","Returned",270.0
+42,"Cash","Closed",86.0
+42,"Cash","Collected",137.0
+42,"Pickup","Canceled",19.0
+42,"Pickup","Closed",464.0
+42,"Pickup","DTO",2188.0
+42,"Pickup","LOST",1.0
+42,"Pickup","Picked Up",36.0
+42,"Pickup","Scheduled",8.0
+42,"Pre-paid","Delivered",14945.0
+42,"Pre-paid","In Transit",1.0
+42,"Pre-paid","LOST",17.0
+42,"Pre-paid","Not Picked",12.0
+42,"Pre-paid","RTO",476.0
+42,"Pre-paid","Returned",20.0
+42,"REPL","DTO",76.0
+42,"REPL","Not Picked",4.0
+42,"REPL","Picked Up",1.0
+42,"REPL","RTO",7.0
+43,"COD","Delivered",34555.0
+43,"COD","Dispatched",1.0
+43,"COD","In Transit",16.0
+43,"COD","LOST",40.0
+43,"COD","Not Picked",89.0
+43,"COD","Pending",12.0
+43,"COD","RTO",8564.0
+43,"COD","Returned",295.0
+43,"Cash","Closed",94.0
+43,"Cash","Collected",145.0
+43,"Pickup","Canceled",15.0
+43,"Pickup","Closed",479.0
+43,"Pickup","DTO",2106.0
+43,"Pickup","LOST",2.0
+43,"Pickup","Picked Up",30.0
+43,"Pickup","Scheduled",13.0
+43,"Pre-paid","Delivered",16052.0
+43,"Pre-paid","Dispatched",1.0
+43,"Pre-paid","In Transit",3.0
+43,"Pre-paid","LOST",14.0
+43,"Pre-paid","Not Picked",23.0
+43,"Pre-paid","Pending",3.0
+43,"Pre-paid","RTO",558.0
+43,"Pre-paid","Returned",18.0
+43,"REPL","DTO",76.0
+43,"REPL","LOST",1.0
+43,"REPL","Not Picked",1.0
+43,"REPL","RTO",3.0
+44,"COD","Delivered",33513.0
+44,"COD","In Transit",16.0
+44,"COD","LOST",37.0
+44,"COD","Not Picked",60.0
+44,"COD","Pending",8.0
+44,"COD","RTO",8093.0
+44,"COD","Returned",290.0
+44,"Cash","Canceled",2.0
+44,"Cash","Closed",82.0
+44,"Cash","Collected",129.0
+44,"Pickup","Canceled",26.0
+44,"Pickup","Closed",365.0
+44,"Pickup","DTO",1872.0
+44,"Pickup","LOST",2.0
+44,"Pickup","Picked Up",13.0
+44,"Pickup","Scheduled",5.0
+44,"Pre-paid","Delivered",14365.0
+44,"Pre-paid","In Transit",14.0
+44,"Pre-paid","LOST",7.0
+44,"Pre-paid","Not Picked",14.0
+44,"Pre-paid","RTO",436.0
+44,"Pre-paid","Returned",15.0
+44,"REPL","DTO",55.0
+44,"REPL","Not Picked",3.0
+44,"REPL","RTO",7.0
+45,"COD","Delivered",29838.0
+45,"COD","In Transit",16.0
+45,"COD","LOST",51.0
+45,"COD","Not Picked",38.0
+45,"COD","Pending",6.0
+45,"COD","RTO",6842.0
+45,"COD","Returned",279.0
+45,"Cash","Canceled",1.0
+45,"Cash","Closed",90.0
+45,"Cash","Collected",99.0
+45,"Pickup","Canceled",20.0
+45,"Pickup","Closed",325.0
+45,"Pickup","DTO",1708.0
+45,"Pickup","LOST",3.0
+45,"Pickup","Picked Up",50.0
+45,"Pickup","Scheduled",6.0
+45,"Pre-paid","Delivered",14324.0
+45,"Pre-paid","In Transit",15.0
+45,"Pre-paid","LOST",18.0
+45,"Pre-paid","Not Picked",27.0
+45,"Pre-paid","RTO",453.0
+45,"Pre-paid","Returned",10.0
+45,"REPL","DTO",32.0
+45,"REPL","Not Picked",3.0
+45,"REPL","Picked Up",1.0
+45,"REPL","RTO",6.0
+46,"COD","Delivered",20189.0
+46,"COD","In Transit",17.0
+46,"COD","LOST",20.0
+46,"COD","Not Picked",11.0
+46,"COD","Pending",6.0
+46,"COD","RTO",4686.0
+46,"COD","Returned",204.0
+46,"Cash","Canceled",1.0
+46,"Cash","Closed",54.0
+46,"Cash","Collected",95.0
+46,"Pickup","Canceled",16.0
+46,"Pickup","Closed",150.0
+46,"Pickup","DTO",950.0
+46,"Pickup","LOST",4.0
+46,"Pickup","Picked Up",7.0
+46,"Pickup","Scheduled",3.0
+46,"Pre-paid","Delivered",4181.0
+46,"Pre-paid","In Transit",2.0
+46,"Pre-paid","LOST",6.0
+46,"Pre-paid","Not Picked",2.0
+46,"Pre-paid","RTO",89.0
+46,"Pre-paid","Returned",7.0
+46,"REPL","DTO",38.0
+46,"REPL","Picked Up",1.0
+46,"REPL","RTO",5.0
+47,"COD","Delivered",34754.0
+47,"COD","In Transit",13.0
+47,"COD","LOST",44.0
+47,"COD","Not Picked",59.0
+47,"COD","Pending",11.0
+47,"COD","RTO",7615.0
+47,"COD","Returned",403.0
+47,"Cash","Canceled",1.0
+47,"Cash","Closed",87.0
+47,"Cash","Collected",145.0
+47,"Cash","Scheduled",2.0
+47,"Pickup","Canceled",20.0
+47,"Pickup","Closed",559.0
+47,"Pickup","DTO",1837.0
+47,"Pickup","LOST",1.0
+47,"Pickup","Picked Up",56.0
+47,"Pickup","Scheduled",26.0
+47,"Pre-paid","Delivered",16372.0
+47,"Pre-paid","In Transit",4.0
+47,"Pre-paid","LOST",8.0
+47,"Pre-paid","Not Picked",12.0
+47,"Pre-paid","Pending",1.0
+47,"Pre-paid","RTO",287.0
+47,"Pre-paid","Returned",14.0
+47,"REPL","DTO",19.0
+47,"REPL","Not Picked",1.0
+47,"REPL","Picked Up",1.0
+47,"REPL","RTO",5.0
+48,"COD","Delivered",37793.0
+48,"COD","In Transit",10.0
+48,"COD","LOST",69.0
+48,"COD","Not Picked",234.0
+48,"COD","Pending",24.0
+48,"COD","RTO",7545.0
+48,"COD","Returned",411.0
+48,"Cash","Canceled",1.0
+48,"Cash","Closed",50.0
+48,"Cash","Collected",106.0
+48,"Pickup","Canceled",37.0
+48,"Pickup","Closed",306.0
+48,"Pickup","DTO",1824.0
+48,"Pickup","Picked Up",46.0
+48,"Pickup","Scheduled",2.0
+48,"Pre-paid","Delivered",19059.0
+48,"Pre-paid","In Transit",3.0
+48,"Pre-paid","LOST",20.0
+48,"Pre-paid","Not Picked",48.0
+48,"Pre-paid","RTO",370.0
+48,"Pre-paid","Returned",17.0
+48,"REPL","DTO",43.0
+48,"REPL","Not Picked",3.0
+48,"REPL","Picked Up",3.0
+48,"REPL","RTO",5.0
+49,"COD","Delivered",35283.0
+49,"COD","Dispatched",1.0
+49,"COD","In Transit",47.0
+49,"COD","LOST",28.0
+49,"COD","Not Picked",52.0
+49,"COD","Pending",20.0
+49,"COD","RTO",7342.0
+49,"COD","Returned",469.0
+49,"Cash","Canceled",2.0
+49,"Cash","Closed",88.0
+49,"Cash","Collected",160.0
+49,"Pickup","Canceled",59.0
+49,"Pickup","Closed",650.0
+49,"Pickup","DTO",3603.0
+49,"Pickup","LOST",1.0
+49,"Pickup","Picked Up",44.0
+49,"Pickup","Scheduled",5.0
+49,"Pre-paid","Delivered",17766.0
+49,"Pre-paid","In Transit",10.0
+49,"Pre-paid","LOST",7.0
+49,"Pre-paid","Not Picked",12.0
+49,"Pre-paid","Pending",1.0
+49,"Pre-paid","RTO",415.0
+49,"Pre-paid","Returned",40.0
+49,"REPL","DTO",55.0
+49,"REPL","LOST",1.0
+49,"REPL","Picked Up",5.0
+49,"REPL","RTO",8.0
+49,"REPL","Returned",1.0
+50,"COD","Delivered",34977.0
+50,"COD","Dispatched",4.0
+50,"COD","In Transit",23.0
+50,"COD","LOST",58.0
+50,"COD","Not Picked",288.0
+50,"COD","Pending",48.0
+50,"COD","RTO",8373.0
+50,"COD","Returned",594.0
+50,"Cash","Canceled",5.0
+50,"Cash","Closed",87.0
+50,"Cash","Collected",126.0
+50,"Cash","Scheduled",1.0
+50,"Pickup","Canceled",75.0
+50,"Pickup","Closed",539.0
+50,"Pickup","DTO",2765.0
+50,"Pickup","LOST",1.0
+50,"Pickup","Picked Up",83.0
+50,"Pickup","Scheduled",37.0
+50,"Pre-paid","Delivered",17917.0
+50,"Pre-paid","Dispatched",1.0
+50,"Pre-paid","In Transit",4.0
+50,"Pre-paid","LOST",12.0
+50,"Pre-paid","Not Picked",62.0
+50,"Pre-paid","Pending",4.0
+50,"Pre-paid","RTO",471.0
+50,"Pre-paid","Returned",30.0
+50,"REPL","DTO",14.0
+50,"REPL","Not Picked",4.0
+50,"REPL","Picked Up",5.0
+51,"COD","Delivered",30475.0
+51,"COD","Dispatched",1.0
+51,"COD","In Transit",14.0
+51,"COD","LOST",40.0
+51,"COD","Not Picked",142.0
+51,"COD","Pending",31.0
+51,"COD","RTO",6250.0
+51,"COD","Returned",581.0
+51,"Cash","Canceled",17.0
+51,"Cash","Closed",79.0
+51,"Cash","Collected",126.0
+51,"Pickup","Canceled",93.0
+51,"Pickup","Closed",421.0
+51,"Pickup","DTO",2158.0
+51,"Pickup","Dispatched",6.0
+51,"Pickup","LOST",3.0
+51,"Pickup","Picked Up",72.0
+51,"Pickup","Scheduled",79.0
+51,"Pre-paid","Delivered",15825.0
+51,"Pre-paid","Dispatched",1.0
+51,"Pre-paid","In Transit",1.0
+51,"Pre-paid","LOST",12.0
+51,"Pre-paid","Not Picked",42.0
+51,"Pre-paid","Pending",3.0
+51,"Pre-paid","RTO",357.0
+51,"Pre-paid","Returned",38.0
+51,"REPL","DTO",14.0
+51,"REPL","RTO",2.0
+52,"COD","Delivered",30725.0
+52,"COD","Dispatched",1.0
+52,"COD","In Transit",39.0
+52,"COD","LOST",27.0
+52,"COD","Not Picked",28.0
+52,"COD","Pending",34.0
+52,"COD","RTO",8337.0
+52,"COD","Returned",474.0
+52,"Cash","Canceled",4.0
+52,"Cash","Closed",67.0
+52,"Cash","Collected",105.0
+52,"Pickup","Canceled",158.0
+52,"Pickup","Closed",473.0
+52,"Pickup","DTO",2993.0
+52,"Pickup","LOST",2.0
+52,"Pickup","Picked Up",82.0
+52,"Pickup","Scheduled",10.0
+52,"Pre-paid","Delivered",15250.0
+52,"Pre-paid","In Transit",8.0
+52,"Pre-paid","LOST",5.0
+52,"Pre-paid","Not Picked",6.0
+52,"Pre-paid","Pending",2.0
+52,"Pre-paid","RTO",653.0
+52,"Pre-paid","Returned",28.0
+52,"REPL","DTO",22.0
+53,"COD","Delivered",14514.0
+53,"COD","In Transit",5.0
+53,"COD","LOST",2.0
+53,"COD","Not Picked",5.0
+53,"COD","Pending",25.0
+53,"COD","RTO",4100.0
+53,"COD","Returned",146.0
+53,"Cash","Canceled",8.0
+53,"Cash","Closed",37.0
+53,"Cash","Collected",90.0
+53,"Pickup","Canceled",50.0
+53,"Pickup","Closed",130.0
+53,"Pickup","DTO",1144.0
+53,"Pickup","LOST",1.0
+53,"Pickup","Picked Up",10.0
+53,"Pickup","Scheduled",3.0
+53,"Pre-paid","Delivered",4157.0
+53,"Pre-paid","In Transit",1.0
+53,"Pre-paid","LOST",1.0
+53,"Pre-paid","Not Picked",3.0
+53,"Pre-paid","Pending",1.0
+53,"Pre-paid","RTO",197.0
+53,"Pre-paid","Returned",4.0
+53,"REPL","DTO",68.0
+53,"REPL","Picked Up",4.0
+53,"REPL","RTO",6.0
+54,"COD","Delivered",32139.0
+54,"COD","Dispatched",1.0
+54,"COD","In Transit",29.0
+54,"COD","LOST",20.0
+54,"COD","Not Picked",95.0
+54,"COD","Pending",35.0
+54,"COD","RTO",8066.0
+54,"COD","Returned",534.0
+54,"Cash","Canceled",39.0
+54,"Cash","Closed",70.0
+54,"Cash","Collected",147.0
+54,"Pickup","Canceled",136.0
+54,"Pickup","Closed",489.0
+54,"Pickup","DTO",3189.0
+54,"Pickup","LOST",1.0
+54,"Pickup","Picked Up",95.0
+54,"Pickup","Scheduled",6.0
+54,"Pre-paid","Delivered",16060.0
+54,"Pre-paid","In Transit",9.0
+54,"Pre-paid","LOST",12.0
+54,"Pre-paid","Not Picked",57.0
+54,"Pre-paid","Pending",2.0
+54,"Pre-paid","RTO",583.0
+54,"Pre-paid","Returned",55.0
+54,"REPL","DTO",33.0
+54,"REPL","RTO",3.0
+55,"COD","Delivered",34048.0
+55,"COD","Dispatched",2.0
+55,"COD","In Transit",32.0
+55,"COD","LOST",3.0
+55,"COD","Not Picked",37.0
+55,"COD","Pending",81.0
+55,"COD","RTO",9605.0
+55,"COD","Returned",735.0
+55,"Cash","Canceled",84.0
+55,"Cash","Closed",30.0
+55,"Cash","Collected",178.0
+55,"Cash","Scheduled",1.0
+55,"Pickup","Canceled",229.0
+55,"Pickup","Closed",243.0
+55,"Pickup","DTO",2548.0
+55,"Pickup","Dispatched",1.0
+55,"Pickup","Picked Up",63.0
+55,"Pickup","Scheduled",11.0
+55,"Pre-paid","Delivered",15757.0
+55,"Pre-paid","In Transit",4.0
+55,"Pre-paid","LOST",1.0
+55,"Pre-paid","Not Picked",38.0
+55,"Pre-paid","Pending",6.0
+55,"Pre-paid","RTO",534.0
+55,"Pre-paid","Returned",73.0
+55,"REPL","DTO",69.0
+55,"REPL","Picked Up",5.0
+55,"REPL","RTO",8.0
+55,"REPL","Returned",2.0
+56,"COD","Delivered",28473.0
+56,"COD","In Transit",14.0
+56,"COD","LOST",4.0
+56,"COD","Not Picked",61.0
+56,"COD","Pending",58.0
+56,"COD","RTO",5939.0
+56,"COD","Returned",716.0
+56,"Cash","Canceled",94.0
+56,"Cash","Closed",18.0
+56,"Cash","Collected",163.0
+56,"Pickup","Canceled",108.0
+56,"Pickup","Closed",190.0
+56,"Pickup","DTO",1631.0
+56,"Pickup","Picked Up",78.0
+56,"Pickup","Scheduled",10.0
+56,"Pre-paid","Delivered",16692.0
+56,"Pre-paid","In Transit",11.0
+56,"Pre-paid","LOST",1.0
+56,"Pre-paid","Not Picked",31.0
+56,"Pre-paid","Pending",5.0
+56,"Pre-paid","RTO",587.0
+56,"Pre-paid","Returned",34.0
+56,"REPL","DTO",24.0
+56,"REPL","Picked Up",5.0
+56,"REPL","RTO",6.0
+57,"COD","Delivered",30131.0
+57,"COD","Dispatched",2.0
+57,"COD","In Transit",23.0
+57,"COD","LOST",21.0
+57,"COD","Not Picked",75.0
+57,"COD","Pending",69.0
+57,"COD","RTO",5198.0
+57,"COD","Returned",947.0
+57,"Cash","Canceled",61.0
+57,"Cash","Closed",22.0
+57,"Cash","Collected",149.0
+57,"Cash","Scheduled",3.0
+57,"Pickup","Canceled",197.0
+57,"Pickup","Closed",692.0
+57,"Pickup","DTO",3568.0
+57,"Pickup","LOST",1.0
+57,"Pickup","Picked Up",212.0
+57,"Pickup","Scheduled",25.0
+57,"Pre-paid","Delivered",16781.0
+57,"Pre-paid","In Transit",5.0
+57,"Pre-paid","LOST",2.0
+57,"Pre-paid","Not Picked",35.0
+57,"Pre-paid","Pending",5.0
+57,"Pre-paid","RTO",370.0
+57,"Pre-paid","Returned",65.0
+57,"REPL","DTO",57.0
+57,"REPL","Picked Up",9.0
+57,"REPL","RTO",7.0
+58,"COD","Delivered",33647.0
+58,"COD","Dispatched",3.0
+58,"COD","In Transit",60.0
+58,"COD","LOST",16.0
+58,"COD","Not Picked",36.0
+58,"COD","Pending",101.0
+58,"COD","RTO",4699.0
+58,"COD","Returned",1150.0
+58,"Cash","Canceled",27.0
+58,"Cash","Closed",11.0
+58,"Cash","Collected",130.0
+58,"Cash","Scheduled",1.0
+58,"Pickup","Canceled",293.0
+58,"Pickup","Closed",481.0
+58,"Pickup","DTO",1960.0
+58,"Pickup","Picked Up",227.0
+58,"Pickup","Scheduled",21.0
+58,"Pre-paid","Delivered",15626.0
+58,"Pre-paid","Dispatched",1.0
+58,"Pre-paid","In Transit",17.0
+58,"Pre-paid","LOST",8.0
+58,"Pre-paid","Not Picked",15.0
+58,"Pre-paid","Pending",7.0
+58,"Pre-paid","RTO",382.0
+58,"Pre-paid","Returned",44.0
+58,"REPL","DTO",25.0
+58,"REPL","Picked Up",6.0
+58,"REPL","RTO",1.0
+59,"COD","Delivered",30815.0
+59,"COD","In Transit",25.0
+59,"COD","LOST",14.0
+59,"COD","Not Picked",21.0
+59,"COD","Pending",107.0
+59,"COD","RTO",4390.0
+59,"COD","Returned",1254.0
+59,"Cash","Canceled",108.0
+59,"Cash","Closed",25.0
+59,"Cash","Collected",170.0
+59,"Cash","Open",15.0
+59,"Cash","Scheduled",2.0
+59,"Pickup","Canceled",700.0
+59,"Pickup","Closed",204.0
+59,"Pickup","DTO",3971.0
+59,"Pickup","Dispatched",1.0
+59,"Pickup","Picked Up",318.0
+59,"Pickup","Scheduled",66.0
+59,"Pre-paid","Delivered",15671.0
+59,"Pre-paid","In Transit",10.0
+59,"Pre-paid","LOST",2.0
+59,"Pre-paid","Not Picked",8.0
+59,"Pre-paid","Pending",8.0
+59,"Pre-paid","RTO",344.0
+59,"Pre-paid","Returned",51.0
+59,"REPL","DTO",27.0
+59,"REPL","Not Picked",1.0
+59,"REPL","Pending",1.0
+59,"REPL","RTO",2.0
+60,"COD","Delivered",15920.0
+60,"COD","Dispatched",1.0
+60,"COD","In Transit",12.0
+60,"COD","LOST",4.0
+60,"COD","Not Picked",6.0
+60,"COD","Pending",91.0
+60,"COD","RTO",2017.0
+60,"COD","Returned",820.0
+60,"Cash","Canceled",32.0
+60,"Cash","Closed",15.0
+60,"Cash","Collected",112.0
+60,"Cash","Open",7.0
+60,"Cash","Scheduled",1.0
+60,"Pickup","Canceled",242.0
+60,"Pickup","Closed",7.0
+60,"Pickup","DTO",1313.0
+60,"Pickup","Dispatched",1.0
+60,"Pickup","Picked Up",236.0
+60,"Pickup","Scheduled",23.0
+60,"Pre-paid","Delivered",7144.0
+60,"Pre-paid","In Transit",1.0
+60,"Pre-paid","Not Picked",1.0
+60,"Pre-paid","Pending",5.0
+60,"Pre-paid","RTO",67.0
+60,"Pre-paid","Returned",38.0
+60,"REPL","DTO",24.0
+60,"REPL","Pending",1.0
+60,"REPL","Picked Up",22.0
+60,"REPL","RTO",1.0
+60,"REPL","Returned",4.0
+61,"COD","Delivered",30332.0
+61,"COD","Dispatched",4.0
+61,"COD","In Transit",48.0
+61,"COD","LOST",26.0
+61,"COD","Not Picked",61.0
+61,"COD","Pending",206.0
+61,"COD","RTO",3277.0
+61,"COD","Returned",2597.0
+61,"Cash","Canceled",85.0
+61,"Cash","Closed",26.0
+61,"Cash","Collected",203.0
+61,"Cash","Scheduled",3.0
+61,"Pickup","Canceled",789.0
+61,"Pickup","Closed",828.0
+61,"Pickup","DTO",2487.0
+61,"Pickup","Dispatched",2.0
+61,"Pickup","Picked Up",496.0
+61,"Pickup","Scheduled",63.0
+61,"Pre-paid","Delivered",17041.0
+61,"Pre-paid","Dispatched",7.0
+61,"Pre-paid","In Transit",44.0
+61,"Pre-paid","LOST",5.0
+61,"Pre-paid","Not Picked",51.0
+61,"Pre-paid","Pending",54.0
+61,"Pre-paid","RTO",305.0
+61,"Pre-paid","Returned",94.0
+61,"REPL","DTO",16.0
+61,"REPL","Picked Up",23.0
+61,"REPL","RTO",4.0
+61,"REPL","Returned",3.0
+62,"COD","Delivered",32908.0
+62,"COD","Dispatched",14.0
+62,"COD","In Transit",115.0
+62,"COD","LOST",6.0
+62,"COD","Not Picked",53.0
+62,"COD","Pending",379.0
+62,"COD","RTO",3500.0
+62,"COD","Returned",3594.0
+62,"Cash","Canceled",69.0
+62,"Cash","Closed",47.0
+62,"Cash","Collected",199.0
+62,"Cash","Scheduled",1.0
+62,"Pickup","Canceled",333.0
+62,"Pickup","Closed",192.0
+62,"Pickup","DTO",2118.0
+62,"Pickup","Dispatched",3.0
+62,"Pickup","Picked Up",630.0
+62,"Pickup","Scheduled",37.0
+62,"Pre-paid","Delivered",17764.0
+62,"Pre-paid","Dispatched",3.0
+62,"Pre-paid","In Transit",15.0
+62,"Pre-paid","LOST",2.0
+62,"Pre-paid","Not Picked",18.0
+62,"Pre-paid","Pending",56.0
+62,"Pre-paid","RTO",332.0
+62,"Pre-paid","Returned",110.0
+62,"REPL","DTO",12.0
+62,"REPL","In Transit",1.0
+62,"REPL","Picked Up",24.0
+62,"REPL","RTO",1.0
+62,"REPL","Returned",3.0
+63,"COD","Delivered",26706.0
+63,"COD","Dispatched",10.0
+63,"COD","In Transit",112.0
+63,"COD","LOST",2.0
+63,"COD","Not Picked",32.0
+63,"COD","Pending",388.0
+63,"COD","RTO",2230.0
+63,"COD","Returned",3456.0
+63,"Cash","Canceled",88.0
+63,"Cash","Closed",31.0
+63,"Cash","Collected",159.0
+63,"Cash","Scheduled",4.0
+63,"Pickup","Canceled",226.0
+63,"Pickup","Closed",201.0
+63,"Pickup","DTO",1406.0
+63,"Pickup","Dispatched",1.0
+63,"Pickup","LOST",1.0
+63,"Pickup","Picked Up",898.0
+63,"Pickup","Scheduled",32.0
+63,"Pre-paid","Delivered",14951.0
+63,"Pre-paid","Dispatched",4.0
+63,"Pre-paid","In Transit",52.0
+63,"Pre-paid","LOST",1.0
+63,"Pre-paid","Not Picked",29.0
+63,"Pre-paid","Pending",27.0
+63,"Pre-paid","RTO",372.0
+63,"Pre-paid","Returned",122.0
+63,"REPL","DTO",42.0
+63,"REPL","Pending",2.0
+63,"REPL","Picked Up",52.0
+63,"REPL","RTO",1.0
+63,"REPL","Returned",5.0
+64,"COD","Delivered",28047.0
+64,"COD","Dispatched",23.0
+64,"COD","In Transit",299.0
+64,"COD","LOST",3.0
+64,"COD","Not Picked",28.0
+64,"COD","Pending",954.0
+64,"COD","RTO",1524.0
+64,"COD","Returned",5145.0
+64,"Cash","Canceled",53.0
+64,"Cash","Closed",23.0
+64,"Cash","Collected",160.0
+64,"Cash","Scheduled",4.0
+64,"Pickup","Canceled",208.0
+64,"Pickup","Closed",213.0
+64,"Pickup","DTO",1096.0
+64,"Pickup","Picked Up",939.0
+64,"Pickup","Scheduled",53.0
+64,"Pre-paid","Delivered",16035.0
+64,"Pre-paid","Dispatched",9.0
+64,"Pre-paid","In Transit",67.0
+64,"Pre-paid","Not Picked",46.0
+64,"Pre-paid","Pending",64.0
+64,"Pre-paid","RTO",220.0
+64,"Pre-paid","Returned",143.0
+64,"REPL","DTO",12.0
+64,"REPL","Pending",5.0
+64,"REPL","Picked Up",56.0
+64,"REPL","RTO",3.0
+64,"REPL","Returned",7.0
+65,"COD","Delivered",7336.0
+65,"COD","Dispatched",8.0
+65,"COD","In Transit",57.0
+65,"COD","LOST",4.0
+65,"COD","Not Picked",14.0
+65,"COD","Pending",486.0
+65,"COD","RTO",176.0
+65,"COD","Returned",982.0
+65,"Cash","Canceled",52.0
+65,"Cash","Closed",15.0
+65,"Cash","Collected",132.0
+65,"Cash","Scheduled",5.0
+65,"Pickup","Canceled",86.0
+65,"Pickup","Closed",154.0
+65,"Pickup","DTO",582.0
+65,"Pickup","Dispatched",1.0
+65,"Pickup","LOST",1.0
+65,"Pickup","Picked Up",640.0
+65,"Pickup","Scheduled",26.0
+65,"Pre-paid","Delivered",5727.0
+65,"Pre-paid","Dispatched",1.0
+65,"Pre-paid","In Transit",15.0
+65,"Pre-paid","Not Picked",9.0
+65,"Pre-paid","Pending",36.0
+65,"Pre-paid","RTO",17.0
+65,"Pre-paid","Returned",42.0
+65,"REPL","DTO",5.0
+65,"REPL","Pending",1.0
+65,"REPL","Picked Up",11.0
+66,"COD","Delivered",27342.0
+66,"COD","Dispatched",58.0
+66,"COD","In Transit",322.0
+66,"COD","LOST",3.0
+66,"COD","Not Picked",36.0
+66,"COD","Pending",1302.0
+66,"COD","RTO",546.0
+66,"COD","Returned",4163.0
+66,"Cash","Canceled",66.0
+66,"Cash","Closed",8.0
+66,"Cash","Collected",153.0
+66,"Cash","Scheduled",5.0
+66,"Pickup","Canceled",58.0
+66,"Pickup","Closed",88.0
+66,"Pickup","DTO",225.0
+66,"Pickup","Picked Up",366.0
+66,"Pickup","Scheduled",19.0
+66,"Pre-paid","Delivered",14668.0
+66,"Pre-paid","Dispatched",19.0
+66,"Pre-paid","In Transit",121.0
+66,"Pre-paid","LOST",9.0
+66,"Pre-paid","Not Picked",23.0
+66,"Pre-paid","Pending",203.0
+66,"Pre-paid","RTO",205.0
+66,"Pre-paid","Returned",159.0
+66,"REPL","In Transit",3.0
+66,"REPL","Pending",19.0
+66,"REPL","Picked Up",38.0
+66,"REPL","Returned",7.0
+67,"COD","Delivered",16299.0
+67,"COD","Dispatched",70.0
+67,"COD","In Transit",415.0
+67,"COD","LOST",7.0
+67,"COD","Not Picked",15.0
+67,"COD","Pending",1610.0
+67,"COD","RTO",329.0
+67,"COD","Returned",2406.0
+67,"Cash","Canceled",28.0
+67,"Cash","Closed",3.0
+67,"Cash","Collected",101.0
+67,"Cash","Scheduled",4.0
+67,"Pickup","Canceled",172.0
+67,"Pickup","Closed",7.0
+67,"Pickup","DTO",396.0
+67,"Pickup","Dispatched",1.0
+67,"Pickup","Picked Up",927.0
+67,"Pickup","Scheduled",54.0
+67,"Pre-paid","Delivered",8369.0
+67,"Pre-paid","Dispatched",7.0
+67,"Pre-paid","In Transit",75.0
+67,"Pre-paid","LOST",3.0
+67,"Pre-paid","Manifested",2.0
+67,"Pre-paid","Not Picked",12.0
+67,"Pre-paid","Pending",124.0
+67,"Pre-paid","RTO",52.0
+67,"Pre-paid","Returned",71.0
+67,"REPL","DTO",5.0
+67,"REPL","Pending",7.0
+67,"REPL","Picked Up",24.0
+67,"REPL","Returned",1.0
+68,"COD","Delivered",28483.0
+68,"COD","Dispatched",428.0
+68,"COD","In Transit",3251.0
+68,"COD","LOST",2.0
+68,"COD","Not Picked",194.0
+68,"COD","Pending",5890.0
+68,"COD","RTO",281.0
+68,"COD","Returned",4265.0
+68,"Cash","Canceled",86.0
+68,"Cash","Closed",4.0
+68,"Cash","Collected",156.0
+68,"Cash","Dispatched",3.0
+68,"Cash","Scheduled",8.0
+68,"Pickup","Canceled",815.0
+68,"Pickup","Closed",205.0
+68,"Pickup","DTO",534.0
+68,"Pickup","Dispatched",15.0
+68,"Pickup","Picked Up",2773.0
+68,"Pickup","Scheduled",289.0
+68,"Pre-paid","Delivered",15297.0
+68,"Pre-paid","Dispatched",111.0
+68,"Pre-paid","In Transit",709.0
+68,"Pre-paid","Not Picked",83.0
+68,"Pre-paid","Pending",904.0
+68,"Pre-paid","RTO",135.0
+68,"Pre-paid","Returned",336.0
+68,"REPL","Dispatched",1.0
+68,"REPL","In Transit",2.0
+68,"REPL","Pending",14.0
+68,"REPL","Picked Up",37.0
+68,"REPL","Returned",4.0
+69,"COD","Delivered",19913.0
+69,"COD","Dispatched",1044.0
+69,"COD","In Transit",11849.0
+69,"COD","Manifested",1.0
+69,"COD","Not Picked",149.0
+69,"COD","Pending",9221.0
+69,"COD","RTO",193.0
+69,"COD","Returned",3343.0
+69,"Cash","Canceled",63.0
+69,"Cash","Closed",3.0
+69,"Cash","Collected",141.0
+69,"Cash","Dispatched",4.0
+69,"Cash","Scheduled",18.0
+69,"Pickup","Canceled",191.0
+69,"Pickup","Closed",90.0
+69,"Pickup","DTO",36.0
+69,"Pickup","Dispatched",14.0
+69,"Pickup","Open",1.0
+69,"Pickup","Picked Up",975.0
+69,"Pickup","Scheduled",159.0
+69,"Pre-paid","Delivered",13450.0
+69,"Pre-paid","Dispatched",354.0
+69,"Pre-paid","In Transit",3233.0
+69,"Pre-paid","Not Picked",54.0
+69,"Pre-paid","Pending",2696.0
+69,"Pre-paid","RTO",68.0
+69,"Pre-paid","Returned",285.0
+69,"REPL","Dispatched",6.0
+69,"REPL","In Transit",27.0
+69,"REPL","Pending",13.0
+69,"REPL","Picked Up",31.0
+69,"REPL","Returned",1.0
+70,"COD","Delivered",6229.0
+70,"COD","Dispatched",1494.0
+70,"COD","In Transit",32665.0
+70,"COD","LOST",21.0
+70,"COD","Pending",7233.0
+70,"COD","RTO",47.0
+70,"COD","Returned",937.0
+70,"Cash","Canceled",53.0
+70,"Cash","Closed",1.0
+70,"Cash","Collected",117.0
+70,"Cash","Dispatched",7.0
+70,"Cash","Open",2.0
+70,"Cash","Scheduled",44.0
+70,"Pickup","Canceled",251.0
+70,"Pickup","Closed",19.0
+70,"Pickup","DTO",3.0
+70,"Pickup","Dispatched",44.0
+70,"Pickup","Picked Up",2225.0
+70,"Pickup","Scheduled",719.0
+70,"Pre-paid","Delivered",5299.0
+70,"Pre-paid","Dispatched",911.0
+70,"Pre-paid","In Transit",9194.0
+70,"Pre-paid","LOST",1.0
+70,"Pre-paid","Pending",3678.0
+70,"Pre-paid","RTO",56.0
+70,"Pre-paid","Returned",368.0
+70,"REPL","Dispatched",2.0
+70,"REPL","In Transit",35.0
+70,"REPL","Pending",16.0
+70,"REPL","Picked Up",16.0
+70,"REPL","Returned",1.0
+71,"COD","Delivered",814.0
+71,"COD","Dispatched",443.0
+71,"COD","In Transit",38982.0
+71,"COD","LOST",2.0
+71,"COD","Pending",1580.0
+71,"COD","Returned",67.0
+71,"Cash","Canceled",19.0
+71,"Cash","Collected",51.0
+71,"Cash","Dispatched",39.0
+71,"Cash","Open",3.0
+71,"Cash","Scheduled",115.0
+71,"No Data","In Transit",802.0
+71,"Pickup","Canceled",46.0
+71,"Pickup","Closed",11.0
+71,"Pickup","Dispatched",103.0
+71,"Pickup","Picked Up",415.0
+71,"Pickup","Scheduled",1465.0
+71,"Pre-paid","Delivered",354.0
+71,"Pre-paid","Dispatched",493.0
+71,"Pre-paid","In Transit",14893.0
+71,"Pre-paid","Pending",1570.0
+71,"Pre-paid","RTO",6.0
+71,"Pre-paid","Returned",32.0
+71,"REPL","Dispatched",3.0
+71,"REPL","In Transit",80.0
+71,"REPL","Pending",18.0
+71,"REPL","Picked Up",17.0
+71,"REPL","Returned",1.0
+72,"COD","Dispatched",41.0
+72,"COD","In Transit",5740.0
+72,"COD","Pending",294.0
+72,"Cash","Dispatched",2.0
+72,"Cash","Scheduled",7.0
+72,"No Data","In Transit",60.0
+72,"Pickup","Dispatched",48.0
+72,"Pickup","Scheduled",563.0
+72,"Pre-paid","Dispatched",1.0
+72,"Pre-paid","In Transit",3856.0
+72,"Pre-paid","Pending",15.0
+72,"REPL","In Transit",11.0
+72,"REPL","Pending",11.0
