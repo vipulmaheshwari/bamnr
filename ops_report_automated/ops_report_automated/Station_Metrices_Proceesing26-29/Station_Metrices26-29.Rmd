@@ -1,0 +1,304 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+#############Processing Metrics City Wise##############
+zz_rep_11_ivd_minus_pd = read.csv("~/R new/occ_cl_rep_11_ivd_minus_pd.csv")
+
+key_operating_del = read.csv("~/R/key-operating-Del.csv")
+key_operating_bom = read.csv("~/R/key-operating-Bom.csv")
+key_operating_blr = read.csv("~/R/key-operating-Blr.csv")
+
+
+zz_rep_11_op1_del = zz_rep_11_ivd_minus_pd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Delhi NCR"
+
+         ) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_op1_del$wkend_dt = as.character(zz_rep_11_op1_del$wkend_dt)
+
+zz_rep_11_op1_del$wkend_dt = as.POSIXct(zz_rep_11_op1_del$wkend_dt , format="%j")
+
+zz_rep_11_op2_del = zz_rep_11_op1_del%>%
+  group_by(wkend_dt,X_id.deltaHr)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+zz_rep_11_op3_del = zz_rep_11_op2_del %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")
+# %>%
+#     dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+# 
+zz_rep_11_fbd_minus_ivd = read.csv("~/R/occ-cl-rep-11-fbd-minus-ivd.csv")
+
+zz_rep_11_2_op1_del = zz_rep_11_fbd_minus_ivd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Delhi NCR") %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_2_op1_del$wkend_dt = as.character(zz_rep_11_2_op1_del$wkend_dt)
+
+zz_rep_11_2_op1_del$wkend_dt = as.POSIXct(zz_rep_11_2_op1_del$wkend_dt , format="%j")
+
+zz_rep_11_2_op2_del = zz_rep_11_2_op1_del%>%
+  group_by(wkend_dt , X_id.deltaHr   )%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+
+zz_rep_11_2_op3_del = zz_rep_11_2_op2_del %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")
+# %>%
+#     dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+# 
+
+##############Bombay###############
+
+
+zz_rep_11_op1_bom = zz_rep_11_ivd_minus_pd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Mumbai"
+
+         ) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_op1_bom$wkend_dt = as.character(zz_rep_11_op1_bom$wkend_dt)
+
+zz_rep_11_op1_bom$wkend_dt = as.POSIXct(zz_rep_11_op1_bom$wkend_dt , format="%j")
+
+zz_rep_11_op2_bom = zz_rep_11_op1_bom%>%
+  group_by(wkend_dt,X_id.deltaHr)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+zz_rep_11_op3_bom = zz_rep_11_op2_bom %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")
+# %>%
+#     dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+zz_rep_11_2_op1_bom = zz_rep_11_fbd_minus_ivd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Mumbai") %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_2_op1_bom$wkend_dt = as.character(zz_rep_11_2_op1_bom$wkend_dt)
+
+zz_rep_11_2_op1_bom$wkend_dt = as.POSIXct(zz_rep_11_2_op1_bom$wkend_dt , format="%j")
+
+zz_rep_11_2_op2_bom = zz_rep_11_2_op1_bom%>%
+  group_by(wkend_dt , X_id.deltaHr   )%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+
+zz_rep_11_2_op3_bom = zz_rep_11_2_op2_bom %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")
+# %>%
+#     dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+###############Bangalore#####################
+
+
+
+zz_rep_11_op1_blr = zz_rep_11_ivd_minus_pd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Bangalore"
+
+         ) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_op1_blr$wkend_dt = as.character(zz_rep_11_op1_blr$wkend_dt)
+
+zz_rep_11_op1_blr$wkend_dt = as.POSIXct(zz_rep_11_op1_blr$wkend_dt , format="%j")
+
+zz_rep_11_op2_blr = zz_rep_11_op1_blr%>%
+  group_by(wkend_dt,X_id.deltaHr)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+zz_rep_11_op3_blr = zz_rep_11_op2_blr %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")
+# %>%
+#     dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+zz_rep_11_2_op1_blr = zz_rep_11_fbd_minus_ivd %>%
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.pt %in% c("COD" , "Pre-paid"),
+         X_id.occ=="Bangalore") %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_11_2_op1_blr$wkend_dt = as.character(zz_rep_11_2_op1_blr$wkend_dt)
+
+zz_rep_11_2_op1_blr$wkend_dt = as.POSIXct(zz_rep_11_2_op1_blr$wkend_dt , format="%j")
+
+zz_rep_11_2_op2_blr = zz_rep_11_2_op1_blr%>%
+  group_by(wkend_dt , X_id.deltaHr   )%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = ifelse( X_id.deltaHr==">8" ,pct ,        
+           cumsum(pct)))
+
+
+zz_rep_11_2_op3_blr = zz_rep_11_2_op2_blr %>%
+  select(wkend_dt,X_id.deltaHr,cumsum)%>%
+  dcast(X_id.deltaHr ~wkend_dt  ,value.var="cumsum")
+# %>%
+#     dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+# 
+```
+
+## Station Metrics - Processing
+
+---
+
+# Processing Metrics - DEL
+
+Processing :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_op3_del),type="html"  , include.rownames=FALSE)
+```
+
+Bagging :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_2_op3_del),type="html"  , include.rownames=FALSE)
+```
+
+---
+#cost
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_operating_del),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+# Processing Metrics - BOM
+Processing :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_op3_bom),type="html"  , include.rownames=FALSE)
+```
+
+Bagging :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_2_op3_bom),type="html"  , include.rownames=FALSE)
+```
+
+---
+#cost
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_operating_del),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+# Processing Metrics - BLR
+Processing :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_op3_blr),type="html"  , include.rownames=FALSE)
+```
+
+Bagging :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_11_2_op3_blr),type="html"  , include.rownames=FALSE)
+```
+
+---
+#cost
+```{r ,echo=FALSE , results='asis'}
+print(xtable(key_operating_del),type="html"  , include.rownames=FALSE)
+```

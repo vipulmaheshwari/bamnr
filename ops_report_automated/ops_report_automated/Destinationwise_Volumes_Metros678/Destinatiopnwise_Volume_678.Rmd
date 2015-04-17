@@ -1,0 +1,379 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+####Slide 6,7,8=""
+Lane_matrix = read.csv("~/R new/Lane-Matrix .csv")
+Lane_matrix2=Lane_matrix %>%
+  select(City , Tier.Type)
+
+zz_rep_24 = read.csv("~/R new/zz-rep-24.csv")
+zz_rep_24 <- data.frame(lapply(zz_rep_24, as.character), stringsAsFactors=FALSE)
+
+Lane_matrix2$City = as.character(Lane_matrix2$City)
+# zz_rep_6_7 = read.csv("~/R new/zz-rep-6-7.csv")
+# zz_rep_6_7$X_id.dl_cnc = as.character(zz_rep_6_7$X_id.dl_cnc)
+
+
+zz_rep_7_op1 = left_join(zz_rep_24, Lane_matrix2, by = c("X_id.dl_cnc" = "City")) %>%
+  distinct()
+
+zz_rep_7_op2 = zz_rep_7_op1 %>%filter(Tier.Type %in% 
+                                        c("Metro" , "Tier 2" , "Tier 1" , "Tier 3")) %>%
+  mutate(Origin = ifelse ( X_id.dl_cnc=="Ahmedabad" , "AMD",
+                           ifelse (X_id.dl_cnc=="Chennai" , "MAA",
+                                   ifelse (X_id.dl_cnc=="Bangalore" , "BLR",
+                                           ifelse (X_id.dl_cnc=="Mumbai" , "BOM" , 
+                                                   ifelse (X_id.dl_cnc=="Kolkata" , "CCU",
+                                                           ifelse (X_id.dl_cnc=="Delhi NCR" , "DEL",
+                                                                   ifelse (X_id.dl_cnc=="Hyderabad" , "HYD",
+                                                                           ifelse (X_id.dl_cnc=="Pune" , "PNQ","OTHERS"
+                                                                           )))))))),
+         Tier= ifelse(Tier.Type %in%c("Metro" ) , "Metro" ,
+                      ifelse(Tier.Type %in%c("Tier 1" ) , "Tier 1" ,      "Tier 2/3"))         
+  )
+
+
+
+
+zz_rep_7_op2 = zz_rep_7_op2 %>%
+  filter(X_id.dl_date>=slide_3_min_mon ) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)+as.integer(slide_3_min_mon)+6) 
+
+
+zz_rep_7_op2$wkend_dt = as.character(zz_rep_7_op2$wkend_dt)
+
+zz_rep_7_op2$wkend_dt = as.POSIXct(zz_rep_7_op2$wkend_dt , format="%j")
+
+
+zz_rep_7_op3 = zz_rep_7_op2%>%select(X_id.dl_date,  X_id.dl_occ  ,
+                                     X_id.dl_cnc,  X_id.dl_cs_ss,  dl_count,	Tier,	Origin,	wkend_dt)%>%
+  filter(X_id.dl_occ!="" , X_id.dl_cnc!="")
+
+zz_rep_7_op3_metro = zz_rep_7_op3%>%
+  group_by  ( wkend_dt , Origin ) %>%
+  summarize(totcount = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*totcount/sum(totcount))
+
+
+zz_rep_7_op3_metro2 = zz_rep_7_op3_metro%>%
+  select(wkend_dt,  Origin,  totcount)%>%
+  dcast(Origin~wkend_dt  , value.var="totcount")
+
+
+x <- c("DEL", "BOM", "BLR"  , "CCU" , "HYD"  , "MAA"  , "AMD" , "PNQ"  , "OTHERS")
+zz_rep_7_op3_metro2 = zz_rep_7_op3_metro2 %>%
+  slice(match(x, Origin))
+
+zz_rep_7_op3_metro3 = zz_rep_7_op3_metro %>%
+  filter(wkend_dt=="2015-04-11")%>%
+  ungroup()%>%
+  select(Origin , pct)%>%
+  slice(match(x, Origin))
+
+##zz_rep_7_op3_metro =  zz_rep_7_op3_metro%>%select(Origin , pct)
+zz_rep_7_op3_metro3 = zz_rep_7_op3_metro3%>%
+  mutate (pct = paste(round(as.numeric(pct),1),"%"))
+
+zz_rep_7_op3_metro33 = inner_join(zz_rep_7_op3_metro3 , zz_rep_7_op3_metro2,
+                                  by="Origin")
+#%>%
+#   dplyr::rename(percent = pct , `02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+
+
+
+####################################Tier 1#############################
+
+zz_rep_7_op22 = zz_rep_7_op1 %>%filter(Tier.Type %in% 
+                                         c("Metro" , "Tier 2" , "Tier 1" , "Tier 3")) %>%
+  mutate(Origin = ifelse ( X_id.dl_cnc=="Guwahati" , "Guwahati",
+                           ifelse (X_id.dl_cnc=="Lucknow" , "Lucknow",
+                                   ifelse (X_id.dl_cnc=="Surat" , "Surat",
+                                           ifelse (X_id.dl_cnc=="Goa" , "Goa" ,
+                                                   ifelse (X_id.dl_cnc=="Bhubaneshwar" , "Bhubaneshwar" ,
+                                                           ifelse (X_id.dl_cnc=="Jaipur" , "Jaipur" ,
+                                                                   ifelse (X_id.dl_cnc=="Chandigarh" , "Chandigarh" ,
+                                                                           ifelse (X_id.dl_cnc=="Vishakhapatnam" , "Vishakhapatnam" ,
+                                                                                   ifelse (X_id.dl_cnc=="Indore" , "Indore" ,
+                                                                                           ifelse (X_id.dl_cnc=="Nagpur" , "Nagpur" ,
+                                                                                                   ifelse (X_id.dl_cnc=="Bhopal" , "Bhopal" ,
+                                                                                                           ifelse (X_id.dl_cnc=="Coimbatore" , "Coimbatore" ,
+                                                                                                                   ifelse (X_id.dl_cnc=="Srinagar" , "Srinagar" ,
+                                                                                                                           ifelse (X_id.dl_cnc=="Pondicherry" , "Pondicherry" ,
+                                                                                                                                   ifelse (X_id.dl_cnc=="Howrah" , "Howrah" ,
+                                                                                                                                           ifelse (X_id.dl_cnc=="Patna" , "Patna", "OTHERS"
+                                                                                                                                           ) ))))))))))))))),
+         Tier= ifelse(Tier.Type %in%c("Metro" ) , "Metro" ,
+                      ifelse(Tier.Type %in%c("Tier 1" ) , "Tier 1" ,      "Tier 2/3"))         
+  )
+
+
+
+
+zz_rep_7_op22 = zz_rep_7_op22 %>%filter(X_id.dl_date>=slide_3_min_mon ) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)+as.integer(slide_3_min_mon)+6) 
+
+
+zz_rep_7_op22$wkend_dt = as.character(zz_rep_7_op22$wkend_dt)
+
+zz_rep_7_op22$wkend_dt = as.POSIXct(zz_rep_7_op22$wkend_dt , format="%j")
+
+
+zz_rep_7_op33 = zz_rep_7_op22%>%
+  select(X_id.dl_date,  X_id.dl_occ  ,
+         X_id.dl_cnc,  X_id.dl_cs_ss,	dl_count,	Tier,	Origin,	wkend_dt)%>%
+  filter(X_id.dl_occ!="" , X_id.dl_cnc!="")
+
+zz_rep_7_op3_t1 = zz_rep_7_op33%>%
+  group_by  ( wkend_dt , Origin ) %>%
+  summarize(totcount = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*totcount/sum(totcount))
+
+
+zz_rep_7_op3_t1_2 = zz_rep_7_op3_t1%>%
+  filter(Origin!="OTHERS")%>%
+  select(wkend_dt,  Origin,  totcount)%>%
+  dcast(Origin~wkend_dt  , value.var="totcount")%>%
+  arrange(desc(`2015-03-14`))
+
+
+zz_rep_7_op3_t1 = zz_rep_7_op3_t1 %>%
+  filter(wkend_dt=="2015-04-11" , Origin!="OTHERS")%>%
+  ungroup()%>%
+  select(Origin , pct)%>%
+  arrange(desc(pct))
+
+zz_rep_7_op3_t1 = zz_rep_7_op3_t1%>%
+  mutate (pct = paste(round(as.numeric(pct),1),"%"))
+##zz_rep_7_op3_metro =  zz_rep_7_op3_metro%>%select(Origin , pct)
+
+zz_rep_7_op3_t1_3 = inner_join(zz_rep_7_op3_t1 , zz_rep_7_op3_t1_2,
+                               by="Origin")
+# %>%
+#   dplyr::rename(percent = pct , `02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+# 
+
+############################################Tier 2/3 ###################################################
+
+zz_rep_7_op222 = zz_rep_7_op1 %>%filter(Tier.Type %in% 
+                                          c("Metro" , "Tier 2" , "Tier 1" , "Tier 3")) %>%
+  mutate(Origin = ifelse ( X_id.dl_cnc=="Mangalore" , "Mangalore",
+                           ifelse (X_id.dl_cnc=="Ludhiana" , "Ludhiana",
+                                   ifelse (X_id.dl_cnc=="Vadodara" , "Vadodara",
+                                           ifelse (X_id.dl_cnc=="Gulbarga" , "Gulbarga" ,
+                                                   ifelse (X_id.dl_cnc=="Durg-Bhilainagar" , "Durg-Bhilainagar" ,
+                                                           ifelse (X_id.dl_cnc=="NSZ" , "NSZ" ,
+                                                                   ifelse (X_id.dl_cnc=="Dhanbad" , "Dhanbad" ,
+                                                                           ifelse (X_id.dl_cnc=="Raipur" , "Raipur" ,
+                                                                                   ifelse (X_id.dl_cnc=="Mysore" , "Mysore" ,
+                                                                                           ifelse (X_id.dl_cnc=="Rourkela" , "Rourkela" ,
+                                                                                                   ifelse (X_id.dl_cnc=="Tumkur" , "Tumkur" ,
+                                                                                                           ifelse (X_id.dl_cnc=="Shillong" , "Shillong" ,
+                                                                                                                   ifelse (X_id.dl_cnc=="Rewa" , "Rewa" ,
+                                                                                                                           ifelse (X_id.dl_cnc=="Jalandhar" , "Jalandhar" ,
+                                                                                                                                   ifelse (X_id.dl_cnc=="Vapi" , "Vapi" ,
+                                                                                                                                           ifelse (X_id.dl_cnc=="Tirupur" , "Tirupur" ,
+                                                                                                                                                   ifelse (X_id.dl_cnc=="Amritsar" , "Amritsar" ,
+                                                                                                                                                           ifelse (X_id.dl_cnc=="Rudrapur" , "Rudrapur" ,
+                                                                                                                                                                   ifelse (X_id.dl_cnc=="Gorakhpur" , "Gorakhpur" ,
+                                                                                                                                                                           ifelse (X_id.dl_cnc=="Ujjain" , "Ujjain" ,
+                                                                                                                                                                                   ifelse (X_id.dl_cnc=="Behrampur" , "Behrampur" ,
+                                                                                                                                                                                           ifelse (X_id.dl_cnc=="Dehradun" , "Dehradun" ,
+                                                                                                                                                                                                   ifelse (X_id.dl_cnc=="Nashik" , "Nashik" ,
+                                                                                                                                                                                                           ifelse (X_id.dl_cnc=="Karur" , "Karur" ,
+                                                                                                                                                                                                                   ifelse (X_id.dl_cnc=="Jamnagar" , "Jamnagar" , "OTHERS"
+                                                                                                                                                                                                                   ) )))))))))))))))))))))))),
+         Tier= ifelse(Tier.Type %in%c("Metro" ) , "Metro" ,
+                      ifelse(Tier.Type %in%c("Tier 1" ) , "Tier 1" ,      "Tier 2/3"))         
+  )
+
+
+
+
+zz_rep_7_op222 = zz_rep_7_op222 %>%
+  filter(X_id.dl_date>=slide_3_min_mon ) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)+as.integer(slide_3_min_mon)+6) 
+
+
+zz_rep_7_op222$wkend_dt = as.character(zz_rep_7_op222$wkend_dt)
+
+zz_rep_7_op222$wkend_dt = as.POSIXct(zz_rep_7_op222$wkend_dt , format="%j")
+
+
+zz_rep_7_op333 = zz_rep_7_op222%>%
+  select(X_id.dl_date,  X_id.dl_occ  ,
+         X_id.dl_cnc,  X_id.dl_cs_ss,  dl_count,	Tier,	Origin,	wkend_dt)%>%
+  filter(X_id.dl_occ!="" , X_id.dl_cnc!="")
+
+zz_rep_7_op3_t2 = zz_rep_7_op333%>%
+  group_by  ( wkend_dt , Origin ) %>%
+  summarize(totcount = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*totcount/sum(totcount))
+
+
+zz_rep_7_op3_t2_2 = zz_rep_7_op3_t2%>%
+  select(wkend_dt,  Origin,  totcount)%>%
+  dcast(Origin~wkend_dt  , value.var="totcount")
+
+
+
+zz_rep_7_op3_t2 = zz_rep_7_op3_t2 %>%
+  filter(wkend_dt=="2015-04-11" , Origin!="OTHERS")%>%
+  ungroup()%>%
+  select(Origin , pct)%>%
+  arrange(desc(pct))
+
+zz_rep_7_op3_t2 = zz_rep_7_op3_t2%>%
+  mutate (pct = paste(round(as.numeric(pct),1),"%"))
+##zz_rep_7_op3_metro =  zz_rep_7_op3_metro%>%select(Origin , pct)
+
+zz_rep_7_op3_t2_3 = inner_join(zz_rep_7_op3_t2 , zz_rep_7_op3_t2_2,
+                               by="Origin")
+# %>%
+#   dplyr::rename(percent = pct , `02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+
+# 
+# zz_rep_7_op3_t1 = zz_rep_7_op3%>%
+#   filter(Tier =="Tier 1")%>%
+#   group_by  ( wkend_dt , Origin ) %>%
+#   summarize(totcount = sum(as.numeric(dl_count)))%>%
+#   mutate(pct=100*totcount/sum(totcount))
+# 
+# 
+# 
+# zz_rep_7_op3_t2_3 = zz_rep_7_op3%>%
+#   filter(Tier %in% c("Tier 2/3" ))%>%
+#   group_by  ( wkend_dt , Origin ) %>%
+#   summarize(totcount = sum(as.numeric(dl_count)))%>%
+#   mutate(pct=100*totcount/sum(totcount))
+# 
+# 
+# 
+# 
+# zz_rep_7_op3_metro2 = zz_rep_7_op3_metro%>%
+#   select(wkend_dt,  Origin,	totcount)%>%
+# dcast(Origin~wkend_dt  , val.var="totcount")
+# 
+# 
+# zz_rep_7_op3_t1_2 = zz_rep_7_op3_t1%>%
+#   select(wkend_dt,  Origin,  totcount)%>%
+#   dcast(Origin~wkend_dt  , val.var="totcount")
+# 
+# 
+# zz_rep_7_op3_t2_3_2 = zz_rep_7_op3_t2_3%>%
+#   select(wkend_dt,  Origin,  totcount)%>%
+#   dcast(Origin~wkend_dt  , val.var="totcount")
+```
+
+
+# Destination-wise Volumes
+### Metro Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_metro33, big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+  
+# Destination-wise Volumes
+### Tier 1 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t1_3[1:10,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+  
+# Destination-wise Volumes
+### Tier 1 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t1_3[11:16,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+```
+
+---
+  
+# Destination-wise Volumes
+### Tier 2/3 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t2_3[1:10,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+  
+# Destination-wise Volumes
+### Tier 2/3 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t2_3[11:20,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+  
+# Destination-wise Volumes
+### Tier 2/3 Cities
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_7_op3_t2_3[20:25,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+```

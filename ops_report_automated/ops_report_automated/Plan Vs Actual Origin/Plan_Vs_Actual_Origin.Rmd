@@ -1,0 +1,171 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+zz_rep_13_10_3 = read.csv("~/R new/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+
+```{r , echo=FALSE, warning=FALSE}
+##Slide 4 
+zz_rep_4_5 = read.csv("~/R new/zz-rep-4-5.csv")
+
+zz_rep_4_5$X_id.dl_occ = as.character(zz_rep_4_5$X_id.dl_occ)
+
+
+zz_rep_4_5_op2 = zz_rep_4_5 %>%
+  select(X_id.dl_oc , dl_count) %>%
+  group_by(X_id.dl_oc) %>%
+  summarize(count = sum(dl_count))
+
+
+
+zz_rep_4_5_op1 = zz_rep_4_5 %>%
+  mutate(Origin = ifelse ( X_id.dl_occ=="Ahmedabad" , "AMD",
+                  ifelse (X_id.dl_occ=="Chennai" , "MAA",
+                  ifelse (X_id.dl_occ=="Bangalore" , "BLR",
+                  ifelse (X_id.dl_occ=="Mumbai" , "BOM",
+                  ifelse (X_id.dl_occ=="Kolkata" , "CCU",
+                  ifelse (X_id.dl_occ=="Delhi NCR" , "DEL",
+                  ifelse (X_id.dl_occ=="Surat" , "STV",
+                  ifelse (X_id.dl_occ=="Hyderabad" , "HYD",
+                  ifelse (X_id.dl_occ=="Panipat" , "PAP",
+                  ifelse (X_id.dl_occ=="Jaipur" , "JAI","OTHERS"     
+                   ))))))))))
+         , Month = as.integer(strftime(strptime(X_id.dl_date ,  "%j") , "%m"))
+  )
+
+
+
+zz_rep_4_5_op1 = zz_rep_4_5_op1 %>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+zz_rep_4_5_op1$wkend_dt = as.character(zz_rep_4_5_op1$wkend_dt)
+
+zz_rep_4_5_op1$wkend_dt = as.POSIXct(zz_rep_4_5_op1$wkend_dt , format="%j")
+
+
+slide_4_max_month = max(zz_rep_4_5_op1$Month)
+slide_4_prev_month = slide_4_max_month -1
+
+zz_rep_4_5_op2 = zz_rep_4_5_op1 %>%
+  filter(Month %in% c(slide_4_max_month , slide_4_prev_month)) %>%
+  mutate (Month_flag = ifelse(Month==slide_4_max_month , "MTD" ,
+                              ifelse(Month==slide_4_prev_month , "PREV" , "NA"
+                              ))) 
+
+zz_rep_4_5_op3 = zz_rep_4_5_op2 %>%
+  group_by(Month_flag) %>%
+  summarise(count=sum(dl_count))
+
+slide_4_MTD_cnt = zz_rep_4_5_op3 %>% filter (Month_flag=="MTD") %>% select(count)
+slide_4_PREV_cnt = zz_rep_4_5_op3 %>% filter (Month_flag=="PREV") %>% select(count)
+
+zz_rep_4_5_op4 = zz_rep_4_5_op2 %>%
+  filter(Month_flag %in% c("MTD" , "PREV")) %>%
+  group_by(Origin , Month_flag) %>%
+  summarise(count=sum(dl_count))
+
+zz_rep_4_5_op5 = zz_rep_4_5_op4 %>%
+  filter(Month_flag %in% c("PREV")) %>%
+  mutate(Total = ifelse(Month_flag=="MTD" , count*100/slide_4_MTD_cnt,
+                        ifelse(Month_flag=="PREV" ,count*100/slide_4_PREV_cnt,0)))
+
+zz_rep_4_5_op5_22 = zz_rep_4_5_op4 %>%
+  filter(Month_flag %in% c("MTD")) %>%
+  mutate(Total = ifelse(Month_flag=="MTD" , count*100/slide_4_MTD_cnt,
+                        ifelse(Month_flag=="PREV" ,count*100/slide_4_PREV_cnt,0)))
+
+
+zz_rep_4_5_op5_2 = zz_rep_4_5_op1%>%
+  filter(wkend_dt=="2015-04-04" |wkend_dt== "2015-04-11")%>%
+  group_by (Origin)%>%
+  summarise(Total = sum(dl_count))
+
+
+zz_rep_4_5_op5_3 = zz_rep_4_5_op5_2%>%
+  ungroup()%>%
+  select(Origin , count=Total)
+
+
+slide_4_plan=read.csv("~/R/slide_4_plan.csv")
+slide_4_plan$Origin=as.character(slide_4_plan$Origin)
+
+zz_rep_4_5_op5_4 = inner_join (slide_4_plan , zz_rep_4_5_op5_3 , by="Origin")
+
+zz_rep_4_5_op5_5 = zz_rep_4_5_op5_4%>%
+  mutate(Gap = as.numeric(count)-as.numeric(Plan_count))
+
+zz_rep_4_5_op5_5 =zz_rep_4_5_op5_5%>%
+  dplyr::rename(Actual_count = count)%>%
+  mutate(Gap_pct = round(as.numeric(Gap)*100/as.numeric(Plan_count),1))
+
+zz_rep_4_5_op5 = rbind(zz_rep_4_5_op5,zz_rep_4_5_op5_22)
+
+
+zz_rep_4_5_op6 =   zz_rep_4_5_op5 %>% select(Origin , Month_flag , Total)
+
+zz_rep_4_5_op7 = dcast(zz_rep_4_5_op6, Origin~Month_flag  , value.var="Total")
+
+zz_rep_4_5_op7 = zz_rep_4_5_op7%>%
+  select(Origin , PREV , MTD)
+
+x <- c("DEL", "BOM", "BLR"  , "CCU" , "STV" ,"JAI" , "AMD" , "PAP" , "HYD" , "MAA" , "OTHERS")
+zz_rep_4_5_op8 = zz_rep_4_5_op7 %>%
+  slice(match(x, Origin))
+
+zz_rep_4_5_op8 = zz_rep_4_5_op8%>%
+  mutate(MTD = paste(round(as.numeric(MTD), digits = 2),"%") , 
+         PREV = paste(round(as.numeric(PREV), digits = 2),"%"))
+
+##paste(x, collapse="--")
+##zz_rep_4_5_op7 = zz_rep_4_5_op7 %>%arrange(as.integer(MTD))
+```
+
+# Plan v/s Actual - Origin  
+  
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_4_5_op8),type="html", include.rownames=FALSE)
+
+```
+

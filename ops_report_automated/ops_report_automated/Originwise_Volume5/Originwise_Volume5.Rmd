@@ -1,0 +1,150 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+  ```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+zz_rep_13_10_3 = read.csv("~/R new/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+
+```{r , echo=FALSE, warning=FALSE}
+zz_rep_4_5 = read.csv("~/R new/zz-rep-4-5.csv")
+##Slide 5
+zz_rep_5_op1 = zz_rep_4_5 %>%
+  mutate(Origin = ifelse (         X_id.dl_oc=="Delhi_S_PC (Delhi)" , "Delhi_S_PC",
+                                   ifelse (X_id.dl_oc=="Del_Okhla_PC (Delhi)" , "Del_Okhla_PC",
+                                           ifelse (X_id.dl_oc=="GGN_Gateway (Haryana)" , "GGN_Gateway",         
+                                                   ifelse (X_id.dl_oc=="Kirtinagar_PC (Delhi)" , "Kirtinagar_PC",
+                                                           ifelse (X_id.dl_oc=="Bhiwandi_Pc (Maharashtra)" , "Bhiwandi_Pc",
+                                                                   ifelse (X_id.dl_oc=="Mumbai_Andheri_PC (Maharashtra)" , "Mumbai_Andheri PC",
+                                                                           ifelse (X_id.dl_oc=="Chennai_Alandur _Pc (Tamil Nadu)" , "Chennai_Alandur",
+                                                                                   ifelse (X_id.dl_oc=="Hyd_Hub (Andhra Pradesh)" , "Hyd_Hub",
+                                                                                           ifelse (X_id.dl_oc=="HS18 Daruhera Implant (Delhi)" , "HS18 Daruhera Implant",
+                                                                                                   ifelse (X_id.dl_oc=="Blr_Domlur (Karnataka)" , "Blr_Domlur",
+                                                                                                           ifelse (X_id.dl_oc=="Tirupur (Tamil Nadu)" , "Tirupur",
+                                                                                                                   ifelse (X_id.dl_oc=="Chandigarh_Hub (Chandigarh)" , "Chandigarh_Hub",
+                                                                                                                           ifelse (X_id.dl_oc=="Pune Hub (Maharashtra)" , "Pune Hub",       
+                                                                                                                                   ifelse (X_id.dl_oc=="BLR_HegdeNagar_PC (Karnataka)" , "BLR_HegdeNagar_PC",
+                                                                                                                                           ifelse (X_id.dl_oc=="CCU_Gopalpur_PC (West Bengal)" , "CCU_Gopalpur_PC",
+                                                                                                                                                   ifelse (X_id.dl_oc=="Surat_Pc (Gujarat)" , "Surat_Pc",
+                                                                                                                                                           ifelse (X_id.dl_oc=="Jaipur_Hub (Rajasthan)" , "Jaipur_Hub",
+                                                                                                                                                                   ifelse (X_id.dl_oc=="AMD_PC (Gujarat)" , "AMD_PC",
+                                                                                                                                                                           ifelse (X_id.dl_oc=="Panipat_PC (Haryana)" , "Panipat_PC",
+                                                                                                                                                                                   ifelse (X_id.dl_oc=="Indore_Las (Madhya Pradesh)" , "Indore_Las","OTHERS"     
+                                                                                                                                                                                   )))))))))))))))))))),
+         day_5=strftime(strptime(X_id.dl_date ,  "%j") , "%a"))
+
+slide_5_min_mon = zz_rep_5_op1 %>%
+  filter(day_5=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_5_min_mon = as.integer(slide_5_min_mon)
+
+
+zz_rep_5_op2 = zz_rep_5_op1 %>%
+  filter(X_id.dl_date>=slide_5_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_5_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_5_min_mon)+6)
+
+
+zz_rep_5_op2$wkend_dt = as.character(zz_rep_5_op2$wkend_dt)
+
+zz_rep_5_op2$wkend_dt = as.POSIXct(zz_rep_5_op2$wkend_dt , format="%j")
+
+
+zz_rep_5_op3 = zz_rep_5_op2 %>%  group_by (wkend_dt , Origin) %>%
+  summarise(Actual_Volume = sum(dl_count)) %>%
+  arrange(Actual_Volume)
+
+
+
+zz_rep_5_op3$Origin = as.character(zz_rep_5_op3$Origin)
+zz_rep_5_op3$wkend_dt = as.character(zz_rep_5_op3$wkend_dt)
+
+zz_rep_5_op4 = melt(zz_rep_5_op3 , id.vars = c("Origin" , "wkend_dt") )%>%
+  arrange(as.integer(value))
+
+zz_rep_5_op5 = dcast(zz_rep_5_op4, Origin~wkend_dt  , value.var="value") %>%
+  filter(Origin!="OTHERS")%>%
+  arrange(desc(`2015-04-11`))
+
+# x <- c("Del_Okhla_PC (Delhi)", "Delhi_S_PC (Delhi)",
+#        "GGN_Gateway (Haryana)"  , "BLR_HegdeNagar_PC (Karnataka)" ,
+#        "Kirtinagar_PC (Delhi)" ,"Bhiwandi_Pc (Maharashtra)" ,
+#        "Mumbai_Andheri_PC (Maharashtra)" , "CCU_Gopalpur_PC (West Bengal)" ,
+#        "Surat_Pc (Gujarat)" , "AMD_PC (Gujarat)" , "Jaipur_Hub (Rajasthan)" , 
+#        "Chennai_Alandur _Pc (Tamil Nadu)" , "Hyd_Hub (Andhra Pradesh)", "HS18 Daruhera Implant (Delhi)", "Blr_Domlur(Karnataka)", "Tirpur (Tamil Nadu)", "Chandigarh_Hub (Chandigarh)", 
+#        "Panipat_PC (Haryana)", "Pune Hub (Maharashtra)", "Indore_Las (Madhya Pradesh)"
+#        )
+# zz_rep_5_op6 = zz_rep_5_op5 %>%
+#   slice(match(x, Origin))
+
+zz_rep_5_op33 =zz_rep_5_op3%>%
+  group_by (Origin) %>%
+  filter(wkend_dt=="2015-04-11")%>%
+  summarise(sum = sum(Actual_Volume))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  filter(Origin!="OTHERS")%>%
+  arrange(desc(pct)) %>%
+  select(Origin , pct)
+zz_rep_5_op33 = zz_rep_5_op33%>%
+  mutate (pct = paste(round(as.numeric(pct),1),"%"))
+zz_rep_5_op5 = inner_join(zz_rep_5_op33 , zz_rep_5_op5 ,by="Origin")
+
+# zz_rep_5_op5 =  zz_rep_5_op5%>%
+# dplyr::rename(percent = pct , `02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+```
+
+
+# Origin-wise Volumes
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_5_op5[1:10,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
+
+---
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_5_op5[11:19,], big.interval = 3,big.mark=",")), type="html" , include.rownames=FALSE)
+
+```
