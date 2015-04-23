@@ -1,0 +1,520 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+
+```
+
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+
+```
+
+```{r , echo=FALSE, warning=FALSE}
+#################Slide 16-22############################
+zz_rep_16_22 = read.csv("~/R new1/zz-rep-16-22.csv")
+zz_rep_16_op1 = zz_rep_16_22%>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rep_16_op1$wkend_dt = as.character(zz_rep_16_op1$wkend_dt)
+
+zz_rep_16_op1$wkend_dt = as.POSIXct(zz_rep_16_op1$wkend_dt , format="%j")
+
+
+zz_rep_16_op1<- data.frame(lapply(zz_rep_16_op1, as.character), stringsAsFactors=FALSE)
+
+##zz_rep_16_op1$X_id.dl_cnc = as.character(zz_rep_16_op1$X_id.dl_cnc)
+Lane_matrix = read.csv("~/R new1/Lane-Matrix .csv")
+Lane_matrix2=Lane_matrix %>%
+  select(City , Tier.Type)
+Lane_matrix2<- data.frame(lapply(Lane_matrix2, as.character), stringsAsFactors=FALSE)
+
+
+zz_rep_16_op2 = left_join(zz_rep_16_op1, Lane_matrix2, by = c("X_id.dl_cnc" = "City")) %>%
+  distinct()
+
+zz_rep_16_op3 = zz_rep_16_op2%>%
+filter(X_id.dl_occ %in% c("Delhi NCR" , "Bangalore" , "Hyderabad" , "Jaipur"
+                            ,"Kolkata" , "Mumbai" , "Surat")) %>%
+  mutate(Tier = ifelse( X_id.dl_occ==X_id.dl_cnc , X_id.dl_occ , 
+                ifelse(Tier.Type %in%c("Metro" ) , "Metro" ,
+                ifelse(Tier.Type %in%c("Tier 1" , "Tier 2" ) , "Tier 1/2","Others"
+          ))),
+         DDel = ifelse(as.numeric(X_id.dl_time)<4 ,X_id.dl_time,">3" ))
+
+zz_rep_16_op4 = zz_rep_16_op3%>%
+  group_by(X_id.dl_occ , Tier,  wkend_dt , DDel  )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum=cumsum(pct))
+
+
+
+zz_rep_16_op5_del = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Delhi NCR" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+
+# zz_rep_16_op5_del =zz_rep_16_op5_del %>%
+# rowwise() %>% 
+#   mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+#          Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),	
+#                   as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+#                   
+#          )
+
+x <- c("Delhi NCR" , "Metro" , 
+       "Tier 1/2" ,
+       "Others"   )
+
+# x <- c("Delhi NCR" , "Delhi NCR" ,"Delhi NCR" ,"Delhi NCR" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+zz_rep_16_op4_del = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Delhi NCR" , wkend_dt=="2015-04-18")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+
+
+zz_rep_16_op4_del = zz_rep_16_op4_del %>%
+  slice(match(x, Tier))
+
+zz_rep_16_op5_del = inner_join(zz_rep_16_op4_del,zz_rep_16_op5_del , by="Tier") 
+
+
+zz_rep_16_op5_bom = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Mumbai" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+  
+
+# 
+# zz_rep_16_op5_bom =zz_rep_16_op5_bom %>%
+# rowwise() %>% 
+#   mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+#          Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+#                   as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+#                   
+#          )
+
+
+x <- c("Mumbai" , "Metro" , 
+       "Tier 1/2" ,
+       "Others"   )
+
+
+
+zz_rep_16_op4_bom = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Mumbai" , wkend_dt=="2015-04-18")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+zz_rep_16_op4_bom = zz_rep_16_op4_bom %>%
+  slice(match(x, Tier))
+
+zz_rep_16_op5_bom = inner_join(zz_rep_16_op4_bom,zz_rep_16_op5_bom , by="Tier") 
+
+
+# x <- c("Mumbai" , "Mumbai" ,"Mumbai" ,"Mumbai" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_blr = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Bangalore" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+# 
+# zz_rep_16_op5_blr =zz_rep_16_op5_blr %>%
+# rowwise() %>% 
+#   mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+#          Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+#                   as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+#                   
+#          )
+
+
+
+zz_rep_16_op4_blr = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Bangalore" , wkend_dt=="2015-04-18")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+x <- c("Bangalore" , "Metro" , 
+       "Tier 1/2" ,
+       "Others"   )
+
+zz_rep_16_op4_blr = zz_rep_16_op4_blr %>%
+  slice(match(x, Tier))
+
+zz_rep_16_op5_blr = inner_join(zz_rep_16_op4_blr,zz_rep_16_op5_blr , by="Tier") 
+
+
+
+
+# x <- c("Bangalore" , "Bangalore" ,"Bangalore" ,"Bangalore" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_ccu = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Kolkata" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+
+# zz_rep_16_op5_ccu =zz_rep_16_op5_ccu %>%
+# rowwise() %>% 
+#   mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+#          Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+#                   as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+#                   
+#          )
+
+
+zz_rep_16_op4_ccu = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Kolkata" , wkend_dt=="2015-04-18")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+
+x <- c("Kolkata" , "Metro" , 
+       "Tier 1/2" ,
+       "Others"   )
+
+zz_rep_16_op4_ccu = zz_rep_16_op4_ccu %>%
+  slice(match(x, Tier))
+
+
+zz_rep_16_op5_ccu = inner_join(zz_rep_16_op4_ccu,zz_rep_16_op5_ccu , by="Tier") 
+
+
+
+# 
+# x <- c("Kolkata" , "Kolkata" ,"Kolkata" ,"Kolkata" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_jai = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Jaipur" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+# 
+# zz_rep_16_op5_jai =zz_rep_16_op5_jai %>%
+# rowwise() %>% 
+#   mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+#          Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+#                   as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+#                   
+#          )
+
+
+zz_rep_16_op4_jai = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Jaipur" , wkend_dt=="2015-04-18")%>%
+  group_by(Tier)%>%
+  summarize(Volume= sum(sum))
+
+
+
+x <- c("Jaipur" , "Metro" , 
+       "Tier 1/2" ,
+       "Others"   )
+
+zz_rep_16_op4_jai = zz_rep_16_op4_jai %>%
+  slice(match(x, Tier))
+
+
+zz_rep_16_op5_jai = inner_join(zz_rep_16_op4_jai,zz_rep_16_op5_jai , by="Tier") 
+
+
+
+# x <- c("Jaipur" , "Jaipur" ,"Jaipur" ,"Jaipur" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_stv = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Surat" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+
+# 
+# zz_rep_16_op5_stv =zz_rep_16_op5_stv %>%
+# rowwise() %>% 
+#   mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+#          Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+#                   as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+#                   
+#          )
+
+
+zz_rep_16_op4_stv = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Surat" , wkend_dt=="2015-04-18")%>%
+  group_by(Tier)%>%
+  summarize(Volume= sum(sum))
+
+
+x <- c("Surat" , "Metro" , 
+       "Tier 1/2" ,
+       "Others"   )
+
+
+zz_rep_16_op4_stv = zz_rep_16_op4_stv %>%
+  slice(match(x, Tier))
+
+
+
+
+zz_rep_16_op5_stv = inner_join(zz_rep_16_op4_stv,zz_rep_16_op5_stv , by="Tier") 
+
+
+
+
+# x <- c("Surat" , "Surat" ,"Surat" ,"Surat" ,
+#        "Metro" ,"Metro" ,"Metro" ,"Metro" , 
+#        "Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" ,"Tier 1/2" , 
+#        "Others" ,"Others" ,"Others" ,"Others"  )
+
+
+zz_rep_16_op5_hyd = zz_rep_16_op4 %>%
+  mutate(cumsum = round(cumsum,1))%>%
+  filter(X_id.dl_occ=="Hyderabad" ,DDel!=">3")%>%
+  dcast(Tier+DDel~wkend_dt  ,value.var="cumsum")
+# 
+# 
+# zz_rep_16_op5_hyd =zz_rep_16_op5_hyd %>%
+# rowwise() %>% 
+#   mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+#          Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+#                   as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+#                   
+#          )
+
+
+
+zz_rep_16_op4_hyd = zz_rep_16_op4%>%
+  filter(X_id.dl_occ=="Hyderabad" , wkend_dt=="2015-04-18")%>%
+  group_by(Tier)%>%
+  summarize(Volume = sum(sum))
+
+
+x <- c("Hyderabad" , "Metro" , 
+       "Tier 1/2" ,
+       "Others"   )
+
+zz_rep_16_op4_hyd = zz_rep_16_op4_hyd %>%
+  slice(match(x, Tier))
+
+
+zz_rep_16_op5_hyd = inner_join(zz_rep_16_op4_hyd,zz_rep_16_op5_hyd , by="Tier") 
+
+
+
+
+```
+
+
+
+## Lane Metrics - Forward
+
+---
+
+# Lane Metrics ex-DEL
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_del[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+
+```
+
+---
+
+# Lane Metrics ex-DEL
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_del[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-BOM
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_bom[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-BOM
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_bom[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+
+---
+
+# Lane Metrics ex-BLR
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_blr[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-BLR
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_blr[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-CCU
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_ccu[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-CCU
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_ccu[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-JAI
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_jai[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-JAI
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_jai[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-STV
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_stv[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-STV
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_stv[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-HYD
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_hyd[1:8,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```
+
+---
+
+# Lane Metrics ex-HYD
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_16_op5_hyd[9:16,], big.interval = 3,big.mark=",")), type="html"    , include.rownames=FALSE)
+```

@@ -1,0 +1,87 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+
+
+
+## Key Metrics - Flipkart
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_dl1_3),type="html"  , include.rownames=FALSE)
+```
+
+Delivery Efficiency :
+  
+  ```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_1_24),type="html"  , include.rownames=FALSE)
+```
+
+SDD Breach :
+  
+  ```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl13),type="html"  , include.rownames=FALSE)
+```
+
+NDD Breach :
+  
+  ```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl113),type="html"  , include.rownames=FALSE)
+```
+
+
+---
+  Return Rate :
+  ```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_1_3),type="html"  , include.rownames=FALSE)
+```
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(flipkart[1:6,]),type="html"  , include.rownames=FALSE)
+```
+
+---
+  
+  
+  ```{r ,echo=FALSE , results='asis'}
+print(xtable(flipkart[7:17,]),type="html"  , include.rownames=FALSE)
+```

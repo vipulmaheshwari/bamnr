@@ -1,0 +1,318 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+
+```{r ,echo=FALSE , warning=FALSE}
+
+####Slide 10
+zz_rep_16_22 = read.csv("~/R new1/zz-rep-16-22.csv")
+
+zz_rep_10_op1 = zz_rep_16_22 %>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 
+        
+           
+           )
+
+zz_rep_10_op1$wkend_dt = as.character(zz_rep_10_op1$wkend_dt)
+
+zz_rep_10_op1$wkend_dt = as.POSIXct(zz_rep_10_op1$wkend_dt , format="%j")
+
+
+
+
+zz_rep_10_op2 = zz_rep_10_op1 %>%
+  
+  group_by (wkend_dt , X_id.dl_time )%>%
+  summarise(sum = sum(dl_count)) %>%
+  mutate(pct=100*sum/sum(sum))%>%
+  mutate(cumsum = cumsum(pct))
+  
+  
+
+zz_rep_10_op22 = zz_rep_10_op2%>%
+  filter(X_id.dl_time <4)%>%
+dcast(X_id.dl_time ~wkend_dt  , value.var="cumsum")
+  
+
+
+# zz_rep_10_op22 =zz_rep_10_op22 %>%
+# rowwise() %>% 
+#   mutate(Max= max( as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),  as.numeric(`2015-03-07`),  as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`)),
+#          Min= min(as.numeric( `2015-02-14`),  as.numeric(`2015-02-21`),
+#                   as.numeric(`2015-02-28`),	as.numeric(`2015-03-07`),	
+#                   as.numeric(`2015-03-14`),as.numeric( `2015-03-21`),as.numeric( `2015-03-28`))
+#                   
+#          )
+# 
+
+zz_rep_10_op22 = zz_rep_10_op22%>%
+  mutate(X_id.dl_time = paste("D" ,X_id.dl_time ))
+
+# %>%
+#   dplyr::rename(Speed = X_id.dl_time , `02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+  
+zz_rep_10_pdd_minus_fdd = read.csv("~/R new1/cl-rep-10-pdd-minus-fdd.csv")
+zz_rep_10_p2_op1 = zz_rep_10_pdd_minus_fdd %>%
+filter(X_id.dl_date>=slide_3_min_mon  , 
+       X_id.pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+zz_rep_10_p2_op1$wkend_dt = as.character(zz_rep_10_p2_op1$wkend_dt)
+
+zz_rep_10_p2_op1$wkend_dt = as.POSIXct(zz_rep_10_p2_op1$wkend_dt , format="%j")
+
+
+zz_rep_10_p2_op2 = zz_rep_10_p2_op1 %>%
+  mutate(p2d_flag = ifelse(X_id.pddMinusFdd < 0 , 1,0
+       )) %>%
+  group_by(wkend_dt , p2d_flag)%>%
+  summarise(sum = sum(dl_count))%>%
+mutate(pct=100*sum/sum(sum)) %>%
+    filter(p2d_flag ==1)%>%
+    dcast(p2d_flag~wkend_dt  ,value.var="pct")
+
+# %>%
+#   dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+
+zz_rep_10_ed_minus_fdd = read.csv("~/R new1/cl-rep-10-ed-minus-fdd.csv")
+zz_rep_10_p3_op1 = zz_rep_10_ed_minus_fdd %>%
+filter(X_id.dl_date>=slide_3_min_mon , X_id.pt %in% c("COD" , "Pre-paid") ) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+zz_rep_10_p3_op1$wkend_dt = as.character(zz_rep_10_p3_op1$wkend_dt)
+
+zz_rep_10_p3_op1$wkend_dt = as.POSIXct(zz_rep_10_p3_op1$wkend_dt , format="%j")
+
+
+zz_rep_10_p3_op2 = zz_rep_10_p3_op1 %>%
+  mutate(p2d_flag = ifelse(X_id.edMinusFdd < 0 , 1,0
+       )) %>%
+  group_by(wkend_dt , p2d_flag)%>%
+  summarise(sum = sum(dl_count))%>%
+mutate(pct=100*sum/sum(sum)) %>%
+    filter(p2d_flag ==1)%>%
+    dcast(p2d_flag~wkend_dt  ,value.var="pct")
+# %>%
+#     dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+
+cl_cs_pt_rep_13_10_3_zn = read.csv("~/R new/cl-cs-pt-rep-13-10-3-zn.csv")
+  zz_rep_24_op1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon , X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss=="Delivered" , "Delivered" , "Other")
+         )
+
+
+zz_rep_24_op1$wkend_dt = as.character(zz_rep_24_op1$wkend_dt)
+
+zz_rep_24_op1$wkend_dt = as.POSIXct(zz_rep_24_op1$wkend_dt , format="%j")
+
+zz_rep_24_op22 = zz_rep_24_op1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="Delivered")
+
+zz_rep_24_op24 = zz_rep_24_op22 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+     dcast(Status~wkend_dt  ,value.var="pct")
+#     dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#               `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#               `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+
+cl_zn_rep_10_pd=read.csv("~/R new1/cl_zn_rep_10_pd.csv")
+
+cl_zn_rep_10_pd$X_id.pd = as.POSIXct(as.character(cl_zn_rep_10_pd$X_id.pd) , 
+                                         format="%Y-%m-%dT%H:%M:%S")
+
+
+cl_zn_rep_10_pd_op1 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn=="A")%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , format="%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_op1 = cl_zn_rep_10_pd_op1%>%
+  filter(pd_hr<8)%>%  
+  mutate(sdd_flag = ifelse(X_id.fddMinusPd==0,1,0
+                             
+    
+    ))
+
+cl_zn_rep_10_pd_op1 = cl_zn_rep_10_pd_op1%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_op1$wkend_dt = as.character(cl_zn_rep_10_pd_op1$wkend_dt)
+
+cl_zn_rep_10_pd_op1$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_op1$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_op2 = cl_zn_rep_10_pd_op1%>%
+  group_by( wkend_dt , sdd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_op3 = cl_zn_rep_10_pd_op2%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(sdd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(sdd_flag==0)
+##%>%
+#   dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#        `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#                `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+#  
+  
+################################3
+
+
+cl_zn_rep_10_pd_op11 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn %in% c("B" , "C"))%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_op11 = cl_zn_rep_10_pd_op11%>%
+  filter(pd_hr<16)%>%
+  mutate(ndd_flag = ifelse(X_id.fddMinusPd<2,1,0
+      ))
+
+
+
+cl_zn_rep_10_pd_op11 = cl_zn_rep_10_pd_op11%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_op11$wkend_dt = as.character(cl_zn_rep_10_pd_op11$wkend_dt)
+
+cl_zn_rep_10_pd_op11$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_op11$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_op112 = cl_zn_rep_10_pd_op11%>%
+  group_by( wkend_dt , ndd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_op113 = cl_zn_rep_10_pd_op112%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(ndd_flag~wkend_dt  ,value.var="pct")%>%
+   filter(ndd_flag==0)
+##%>%
+#   dplyr::rename(`02-14` = `2015-02-14`,
+#               `02-21` = `2015-02-21` , `02-28` = `2015-02-28`,
+#        `03-07` = `2015-03-07` , `03-14` = `2015-03-14` , 
+#                `03-21` = `2015-03-21` , `03-28` = `2015-03-28`)
+#  
+
+```
+
+
+# Key Operating Metrics
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_10_op22),type="html"  , include.rownames=FALSE)
+```
+
+
+# Delivery Efficiency : 
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_24_op24),type="html"  , include.rownames=FALSE)
+```
+
+
+
+# P2D Breach % :
+Without NSL :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_10_p2_op2),type="html"  , include.rownames=FALSE)
+```
+With NSL:
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rep_10_p3_op2),type="html"  , include.rownames=FALSE)
+
+```
+
+---
+
+SDD Breach(Zone A)
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_op3),type="html"  , include.rownames=FALSE)
+
+```
+
+NDD Breach(Zone B/C)
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_op113),type="html"  , include.rownames=FALSE)
+
+```

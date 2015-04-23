@@ -1,0 +1,164 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+
+```{r , echo=FALSE, warning=FALSE}
+
+#############################################################################
+######################BAGGING###############################################
+closure_breach = read.csv("~/R new1/closure_breach.csv")
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+week_pin_count=read.csv("~/R new1/cl-week-pin-count.csv")
+lane_mapping=read.csv("~/R new1/lane mapping.csv")
+
+city_centre=read.csv("~/R new1/city_centre.csv")
+bags_count=read.csv("~/R new1/bags_count.csv")
+
+
+
+city_centre$Scan.Location..I.City.=as.character(city_centre$Scan.Location..I.City.)
+bags_count$X_id.oc=as.character(bags_count$X_id.oc)
+lane_mapping$Lane=as.character(lane_mapping$Lane)
+bags_count$X_id.cn=as.character(bags_count$X_id.cn)
+bags_op1 = inner_join(bags_count,city_centre, by = c("X_id.oc" = "Scan.Location..I.City."))
+bags_op1 = inner_join(bags_op1,city_centre, by = c("X_id.cn" = "Scan.Location..I.City."))
+bags_op1 =bags_op1 %>%
+  mutate(Lane = paste(City.x , City.y))
+bags_op2 = inner_join(bags_op1,lane_mapping, by = c("Lane" = "Lane"))
+
+
+
+bags_op3 = bags_op2%>%
+  filter(as.integer(X_id.cd_day)>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((as.integer(X_id.cd_day) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+bags_op3$wkend_dt = as.character(bags_op3$wkend_dt)
+
+bags_op3$wkend_dt = as.POSIXct(bags_op3$wkend_dt , format="%j")
+
+
+bags_op4=bags_op3 %>%
+  
+  mutate(ageing_flag = ifelse (as.integer(aeging)>3 ,1,0))%>%
+  group_by(wkend_dt , ageing_flag)%>%
+  summarise(sum=sum(bag_count))%>%
+  mutate(pct=sum*100/sum(sum))%>%
+  filter(ageing_flag==1)%>%
+  dcast(ageing_flag~wkend_dt , value.var="pct")
+
+############################################################
+bags_op4_2=bags_op3 %>%
+  mutate(lost_flag = ifelse(X_id.ls=="Discarded" , 1,0))%>%
+  group_by(wkend_dt , lost_flag)%>%
+  summarise(sum=sum(bag_count))%>%
+  mutate(pct=sum*100/sum(sum))%>%
+  filter(lost_flag==1)%>%
+  dcast(lost_flag~wkend_dt , value.var="pct")
+
+
+bags_op4_3=bags_op3 %>%
+  group_by(wkend_dt , Zone , aeging)%>%
+  summarise(sum=sum(bag_count))%>%
+  mutate(pct=sum/sum(sum))%>%
+  mutate(cumsum=cumsum(pct))%>%
+  filter(Zone %in% c("A" , "B" , "C") & aeging==1 | Zone %in% c("D" , "E") & aeging==2)%>%
+  dcast(Zone+aeging~wkend_dt , value.var="cumsum")
+##################################
+zz_rd_rto_pd=read.csv("~/R new1/zz_rd_rto_pd.csv")
+
+zz_rd_rto_pd_op1 = zz_rd_rto_pd%>%
+  filter(X_id.pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rd_rto_pd_op1$wkend_dt = as.character(zz_rd_rto_pd_op1$wkend_dt)
+
+zz_rd_rto_pd_op1$wkend_dt= as.POSIXct(zz_rd_rto_pd_op1$wkend_dt , format="%j")
+
+zz_rd_rto_pd_op2=zz_rd_rto_pd_op1%>%  
+  mutate(rto_flag = ifelse(X_id.sd_day-X_id.rd_day>15,1,0))%>%
+  group_by(wkend_dt , rto_flag)%>%
+  summarise(sum=sum(dl_count))%>%
+  mutate(pct=sum*100/sum(sum))%>%
+  dcast(rto_flag~wkend_dt,value.var="pct")
+
+
+zz_rd_rto_pd_op3=zz_rd_rto_pd_op1%>%
+mutate(date_diff = X_id.sd_day-X_id.rd_day)%>%
+group_by(wkend_dt , date_diff)%>%
+  summarise(n=sum(dl_count))%>%
+  mutate(nx=n*date_diff)
+
+zz_rd_rto_pd_op4=zz_rd_rto_pd_op3%>%
+  group_by(wkend_dt )%>%
+  mutate(id=1)%>%
+  summarise(sum=sum(nx)/sum(n))%>%
+  dcast(.~wkend_dt,value.var="sum")
+
+
+```
+
+
+# Key Operating Metrics
+
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(bags_op4),type="html"  , include.rownames=FALSE)
+```
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(bags_op4_2),type="html"  , include.rownames=FALSE)
+```
+
+```{r ,echo=FALSE , results='asis'}
+print(xtable(bags_op4_3),type="html"  , include.rownames=FALSE)
+```
+
+
+
