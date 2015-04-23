@@ -1,0 +1,16 @@
+{
+    "contents" : "library(leaflet)\nlibrary(ShinyDash)\n\nshinyUI(fluidPage(\n  tags$head(tags$link(rel='stylesheet', type='text/css', href='styles.css')),\n  leafletMap(\n    \"map\", \"100%\", 400,\n    initialTileLayer = \"//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png\",\n    initialTileLayerAttribution = HTML('Maps by <a href=\"http://www.mapbox.com/\">Mapbox</a>'),\n    options=list(\n      center = c(28.52741, 77.27714),\n      zoom = 8,\n      maxBounds = list(list(17, -180), list(59, 180))) %>%\n      addMarkers(uspop2000$Long, uspop2000$Lat, icon = JS(\"L.icon({\n                                                          iconUrl: 'C:/Users/abc/Desktop/R practice/r_image/symbol_dv.png',\n                                                          iconSize: [30, 30]\n                                                          })\"))\n    \n      ),\n  fluidRow(\n    column(8, offset=3,\n           h2('DelhiVery-Load Analysis'),\n           htmlWidgetOutput(\n             outputId = 'desc',\n             HTML(paste(\n               'The map is centered at <span id=\"lat\"></span>, <span id=\"lng\"></span>',\n               'with a zoom level of <span id=\"zoom\"></span>.<br/>',\n               'Top <span id=\"shownCities\"></span> out of <span id=\"totalCities\"></span> visible cities are displayed.'\n             ))\n           )\n    )\n  ),\n  hr(),\n  fluidRow(\n    column(3,\n           selectInput('zone', 'Select Zone', c(\"A\", \"B\", \"C\", \"D\", \"E\")),\n           selectInput('maxCenters', 'Maximum center to display', choices=c(\n             5, 15, 25, 35, 45, 55, 65, 75, 85, All = 100000\n           ), selected = 100)\n    ),\n    column(4,\n           h4('Visible centers'),\n           tableOutput('data')\n    ),\n    column(5,\n           h4(id='centerTimeSeriesLabel', class='shiny-text-output'),\n           plotOutput('centerTimeSeries', width='100%', height='250px')\n    )\n  )\n      ))",
+    "created" : 1428903432208.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "2606674086",
+    "id" : "9B519F27",
+    "lastKnownWriteTime" : 1428920253,
+    "path" : "C:/Users/abc/Desktop/R practice/custom_leafelt/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
