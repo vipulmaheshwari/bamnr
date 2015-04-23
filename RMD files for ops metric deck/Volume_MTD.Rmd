@@ -1,0 +1,126 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+
+```{r , echo=FALSE, warning=FALSE}
+
+  ################Client####################
+
+cl_cs_pt_rep_13_10_3_zn = read.csv("~/R new1/cl-cs-pt-rep-13-10-3-zn.csv")
+
+cl_cs_pt_rep_13_10_3_zn_op1 = cl_cs_pt_rep_13_10_3_zn%>%
+  filter(X_id.cl %in% c("Flipkart" , "Snapdeal" , 
+                        "Myntra" , "HomeShop18" , 
+                        "ShopClues" , "Askmebazaar" ,"Getitbazaar",
+                        "Paytm" , "ShopClues" , "HomeShop18-FOS"))%>%
+  mutate(Month = as.integer(strftime(strptime(X_id.dl_date ,  "%j") , "%m")))
+  
+  
+cl_max_month = max(cl_cs_pt_rep_13_10_3_zn_op1$Month)
+
+
+cl_cs_pt_rep_13_10_3_zn_op1 = cl_cs_pt_rep_13_10_3_zn_op1%>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_cs_pt_rep_13_10_3_zn_op1$wkend_dt = as.character(cl_cs_pt_rep_13_10_3_zn_op1$wkend_dt)
+
+cl_cs_pt_rep_13_10_3_zn_op1$wkend_dt= as.POSIXct(cl_cs_pt_rep_13_10_3_zn_op1$wkend_dt , format="%j")
+
+
+cl_cs_pt_rep_13_10_3_zn_op2 =cl_cs_pt_rep_13_10_3_zn_op1%>%
+  filter(wkend_dt=="2015-04-04"|wkend_dt=="2015-04-11" |wkend_dt=="2015-04-18",
+X_id.dl_pt %in% c("COD" , "Pre-paid" , "Pickup" , "Cash"))%>%
+  mutate(payment_type = ifelse(X_id.dl_pt %in% c("COD" , "Pre-paid") , "Forward",
+                               ifelse(X_id.dl_pt %in% c("Pickup") , "Reverse",
+                                      ifelse(X_id.dl_pt %in% c("Cash") , "Cash","NA"
+                                             
+                                      ))),
+         Client = ifelse( X_id.cl %in% c("HomeShop18" , "HomeShop18-FOS"),
+                          "HomeShop18" ,
+                          ifelse ( X_id.cl %in% c("Askmebazaar" ,"Getitbazaar")
+                                   ,"Askmebazaar",
+                          as.character(X_id.cl) )
+           
+           )
+         
+         
+         ) %>%
+  group_by ( Client, payment_type) %>%
+  summarise(Actual_Volume = sum(dl_count)) 
+  
+  ##arrange(wkend_dt)
+
+
+##zz_rep_13_10_3_op3$wkend_dt = as.character(zz_rep_13_10_3_op3$wkend_dt)
+
+
+cl_cs_pt_rep_13_10_3_zn_op2 = dcast(cl_cs_pt_rep_13_10_3_zn_op2,
+            Client~payment_type  , value.var="Actual_Volume")
+
+cl_cs_pt_rep_13_10_3_zn_op2 = cl_cs_pt_rep_13_10_3_zn_op2%>%
+  mutate(Reverse = ifelse(is.na(Reverse),0,Reverse) )%>%
+  rowwise()%>%
+  mutate(Actual_Total_MTD = sum(Forward,  Reverse))
+Client_plan = read.csv("~/R new/Client_plan.csv")
+Client_plan$Client = as.character(Client_plan$Client )
+cl_cs_pt_rep_13_10_3_zn_op2$Client = as.character(cl_cs_pt_rep_13_10_3_zn_op2$Client )
+
+cl_cs_pt_rep_13_10_3_zn_op3 = left_join(cl_cs_pt_rep_13_10_3_zn_op2,
+                                         Client_plan , by="Client")%>%
+  mutate(Gap =  Actual_Total_MTD -as.numeric(Plan_total) )
+
+cl_cs_pt_rep_13_10_3_zn_op3 = cl_cs_pt_rep_13_10_3_zn_op3%>%
+mutate(Gap_perc = round((100*Gap/Plan_total),1)) 
+```
+
+
+## Client Metrics
+
+---
+# Volume MTD
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(cl_cs_pt_rep_13_10_3_zn_op3, big.interval = 3,big.mark=",")),type="html"  , include.rownames=FALSE)

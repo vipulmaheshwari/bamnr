@@ -1,0 +1,144 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+  
+  ```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+```{r , echo=FALSE, warning=FALSE}
+closure_breach = read.csv("~/R new1/closure_breach.csv")
+loss_rate_op1 = closure_breach%>%  filter(X_id.pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+loss_rate_op1$wkend_dt = as.character(loss_rate_op1$wkend_dt)
+
+loss_rate_op1$wkend_dt = as.POSIXct(loss_rate_op1$wkend_dt , format="%j")
+
+clsr_brch_op1 = loss_rate_op1%>%
+  mutate(Del_diff=X_id.fdd_day-X_id.pd_day)%>%
+  mutate(Breach_flag = ifelse(X_id.zn=="A" & Del_diff>1,1,
+                              ifelse(X_id.zn=="B" & Del_diff>2 , 1,
+                                     ifelse(X_id.zn=="C" & Del_diff>2 , 1,
+                                            ifelse(X_id.zn=="D" & Del_diff>3 , 1,
+                                                   ifelse(X_id.zn=="E" & Del_diff>3 , 1,0
+                                                          
+                                                   ))))))
+                              
+clsr_brch_op2 = clsr_brch_op1%>%
+  group_by(wkend_dt)%>%
+  summarise(sum_total=sum(dl_count))
+
+
+clsr_brch_op3 = clsr_brch_op1%>%
+  filter(Breach_flag==1)%>%
+  group_by(wkend_dt)%>%
+  summarise(sum_breach=sum(dl_count))
+
+##clsr_brch_op3
+clsr_brch_op4 = inner_join( clsr_brch_op2, clsr_brch_op3 , by="wkend_dt")
+clsr_brch_op5=clsr_brch_op4%>%
+  mutate(breach_perc=sum_breach*100/sum_total)%>%
+  dcast(.~wkend_dt , value.var="breach_perc")
+#######################################################
+RVP_breach_op1=loss_rate_op1%>%
+  filter(X_id.pt %in% c("Cash" , "Pickup"))%>%
+  mutate(breach_flag= ifelse (X_id.cs %in% c("LOST" , "Canceled"),1,0))%>%
+  group_by(wkend_dt,breach_flag)%>%
+  summarise(sum=sum(dl_count))%>%
+  mutate(pct=sum*100/sum(sum))%>%
+  arrange(desc(breach_flag))%>%
+  mutate(cumsum=cumsum(pct))%>%
+  filter(breach_flag==1)%>%
+  dcast(.~wkend_dt,value.var="cumsum")
+##############################ZONE MIX############################################
+cl_cs_pt_rep_13_10_3_zn = read.csv("~/R new1/cl-cs-pt-rep-13-10-3-zn.csv")
+zn_mix_op1 = cl_cs_pt_rep_13_10_3_zn%>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zn_mix_op1$wkend_dt = as.character(zn_mix_op1$wkend_dt)
+
+zn_mix_op1$wkend_dt= as.POSIXct(zn_mix_op1$wkend_dt , format="%j")
+
+
+zn_mix_op2 = zn_mix_op1%>%
+  filter(X_id.dl_zn%in% c("A" , "B" , "C" , "D" , "E"))%>%
+  group_by(wkend_dt , X_id.dl_zn )%>%
+  summarise(zm=sum(dl_count))%>%
+  mutate(zn_pct = zm*100/sum(zm))%>%
+  mutate(cum_sum = cumsum(zn_pct))
+
+
+zn_mix_op3 = zn_mix_op2%>%
+  dcast(X_id.dl_zn~wkend_dt , value.var="zn_pct")
+#######################################################
+dct_sum=read.csv("~/R new1/dct_sum.csv")
+dct_sum_op1 = dct_sum%>%
+group_by(X_id.dl_week)%>%
+  summarise(sum_c = sum(dl_count) , sum_s=sum(dct_sum))%>%
+  
+  mutate(id=1 , sum = sum_c/sum_s)%>%
+  dcast(id~X_id.dl_week, value.var="sum")
+
+```
+
+Closure Breach % 
+```{r ,echo=FALSE , results='asis'}
+print(xtable(clsr_brch_op5),type="html"  , include.rownames=FALSE)
+```
+RVP Abandon 
+```{r ,echo=FALSE , results='asis'}
+print(xtable(RVP_breach_op1),type="html"  , include.rownames=FALSE)
+```
+Zone Mix
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zn_mix_op3),type="html"  , include.rownames=FALSE)
+```
+No of Attempt/Parcel
+```{r ,echo=FALSE , results='asis'}
+print(xtable(dct_sum_op1),type="html"  , include.rownames=FALSE)
+```

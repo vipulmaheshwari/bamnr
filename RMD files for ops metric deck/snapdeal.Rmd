@@ -1,0 +1,479 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+  
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+```{r , echo=FALSE, warning=FALSE}
+##################D0 , D1 , D2 ###########################3
+cl_zn_rep_10_pd=read.csv("~/R new1/cl_zn_rep_10_pd.csv")
+cl_zn_rep_10_pd_dl1_1 = cl_zn_rep_10_pd%>%
+  filter(X_id.cl %in% c("Snapdeal"))%>%
+  mutate(pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_dl1_2 = cl_zn_rep_10_pd_dl1_1%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_dl1_2$wkend_dt = as.character(cl_zn_rep_10_pd_dl1_2$wkend_dt)
+
+cl_zn_rep_10_pd_dl1_2$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_dl1_2$wkend_dt , format="%j")
+
+
+cl_zn_rep_10_pd_dl1_3 = cl_zn_rep_10_pd_dl1_2%>%
+  group_by(wkend_dt , X_id.fddMinusPd)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct = sum*100/sum(sum))%>%
+  mutate(cumsum = cumsum(pct))%>%
+  filter(X_id.fddMinusPd<=3)
+
+cl_zn_rep_10_pd_dl1_3 = cl_zn_rep_10_pd_dl1_3%>%
+  dcast(X_id.fddMinusPd~wkend_dt,value.var="cumsum")%>%
+  dplyr::rename(Speed = X_id.fddMinusPd )
+
+
+cl_zn_rep_10_pd_dl2_1 = cl_zn_rep_10_pd%>%
+  filter(X_id.cl %in% c("Snapdeal"))%>%
+  mutate(pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_dl2_2 = cl_zn_rep_10_pd_dl2_1%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_dl2_2$wkend_dt = as.character(cl_zn_rep_10_pd_dl2_2$wkend_dt)
+
+cl_zn_rep_10_pd_dl2_2$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_dl2_2$wkend_dt , format="%j")
+
+
+cl_zn_rep_10_pd_dl2_3 = cl_zn_rep_10_pd_dl2_2%>%
+  group_by(wkend_dt , X_id.fddMinusPd)%>%
+  summarise(sum = sum(dl_count))%>%
+  mutate(pct = sum*100/sum(sum))%>%
+  mutate(cumsum = cumsum(pct))%>%
+  filter(X_id.fddMinusPd<=3)
+
+cl_zn_rep_10_pd_dl2_3 = cl_zn_rep_10_pd_dl2_3%>%
+  dcast(X_id.fddMinusPd~wkend_dt,value.var="cumsum")%>%
+  dplyr::rename(Speed = X_id.fddMinusPd)
+
+################SNAPDEAL ##########
+
+
+cl_cs_pt_rep_13_10_3_zn = read.csv("~/R new1/cl-cs-pt-rep-13-10-3-zn.csv")
+
+cl_rr_2_1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon ,
+         X_id.cl %in% c("Snapdeal"),
+         X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss %in% c("RTO" , "Returned") , "RTO" , "Other")
+         )
+
+
+cl_rr_2_1$wkend_dt = as.character(cl_rr_2_1$wkend_dt)
+
+cl_rr_2_1$wkend_dt = as.POSIXct(cl_rr_2_1$wkend_dt , format="%j")
+
+cl_rr_2_2 = cl_rr_2_1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="RTO")
+
+cl_rr_2_3 = cl_rr_2_2 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+################ DElivered %age######################
+cl_cs_pt_rep_13_10_3_zn = read.csv("~/R new1/cl-cs-pt-rep-13-10-3-zn.csv")
+cl_rr_2_1 = cl_cs_pt_rep_13_10_3_zn%>%
+  
+  filter(X_id.dl_date>=slide_3_min_mon ,  X_id.cl %in% c("Snapdeal"),
+         X_id.dl_pt %in% c("COD" , "Pre-paid")) %>%
+  mutate(wkend_dt = (((as.numeric(X_id.dl_date) -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6 , 
+         Status = ifelse(X_id.dl_cs_ss=="Delivered" , "Delivered" , "Other")
+         )
+
+
+cl_rr_2_1$wkend_dt = as.character(cl_rr_2_1$wkend_dt)
+
+cl_rr_2_1$wkend_dt = as.POSIXct(cl_rr_2_1$wkend_dt , format="%j")
+
+cl_rr_2_22 = cl_rr_2_1 %>%
+  group_by( wkend_dt , Status)%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum)) %>%
+  filter(Status=="Delivered")
+
+cl_rr_2_24 = cl_rr_2_22 %>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(Status~wkend_dt  ,value.var="pct")
+
+###############Snapdeal
+cl_zn_rep_10_pd=read.csv("~/R new1/cl_zn_rep_10_pd.csv")
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn=="A" , X_id.cl %in% c("Snapdeal") )%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd_cl21%>%
+  filter(pd_hr<8)%>%  
+  mutate(sdd_flag = ifelse(X_id.fddMinusPd==0,1,0
+                             
+    
+    ))
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd_cl21%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_cl21$wkend_dt = as.character(cl_zn_rep_10_pd_cl21$wkend_dt)
+
+cl_zn_rep_10_pd_cl21$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_cl21$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_cl22 = cl_zn_rep_10_pd_cl21%>%
+  group_by( wkend_dt , sdd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_cl23 = cl_zn_rep_10_pd_cl22%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(sdd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(sdd_flag==0)
+
+################################3
+
+cl_zn_rep_10_pd=read.csv("~/R new1/cl_zn_rep_10_pd.csv")
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd%>%
+  filter(X_id.zn %in% c("B" , "C") ,  X_id.cl %in% c("Snapdeal"))%>%
+  mutate(pd_hr = as.numeric(strftime(X_id.pd , "%H"))
+, 
+         pd_day = as.integer(strftime(X_id.pd , format="%j")))
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd_cl21%>%
+  filter(pd_hr<16)%>%
+  mutate(ndd_flag = ifelse(X_id.fddMinusPd<2,1,0
+      ))
+
+
+
+cl_zn_rep_10_pd_cl21 = cl_zn_rep_10_pd_cl21%>%
+  filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cl_zn_rep_10_pd_cl21$wkend_dt = as.character(cl_zn_rep_10_pd_cl21$wkend_dt)
+
+cl_zn_rep_10_pd_cl21$wkend_dt= as.POSIXct(cl_zn_rep_10_pd_cl21$wkend_dt , format="%j")
+
+cl_zn_rep_10_pd_cl22 = cl_zn_rep_10_pd_cl21%>%
+  group_by( wkend_dt , ndd_flag )%>%
+  summarize(sum = sum(as.numeric(dl_count)))%>%
+  mutate(pct=100*sum/sum(sum))
+  
+  cl_zn_rep_10_pd_cl213 = cl_zn_rep_10_pd_cl22%>%
+  mutate(pct = paste(as.numeric(round(pct , 1)),"%")) %>%
+    dcast(ndd_flag~wkend_dt  ,value.var="pct")%>%
+  filter(ndd_flag==0)
+
+#############Snapdeal RTO Closure, Cycle ################################
+
+zz_rd_rto_pd=read.csv("~/R new1/zz_rd_rto_pd.csv")
+
+zz_rd_rto_pd_op1 = zz_rd_rto_pd%>%
+  filter(X_id.pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zz_rd_rto_pd_op1$wkend_dt = as.character(zz_rd_rto_pd_op1$wkend_dt)
+
+zz_rd_rto_pd_op1$wkend_dt= as.POSIXct(zz_rd_rto_pd_op1$wkend_dt , format="%j")
+
+
+zz_rd_rto_pd_op2_sd=zz_rd_rto_pd_op1%>%
+    filter(X_id.cl %in% c("Snapdeal"))%>%
+
+  mutate(rto_flag = ifelse(X_id.sd_day-X_id.rd_day>15,1,0))%>%
+  group_by(wkend_dt , rto_flag)%>%
+  summarise(sum=sum(dl_count))%>%
+  mutate(pct=sum*100/sum(sum))%>%
+  dcast(rto_flag~wkend_dt,value.var="pct")%>%
+  filter(rto_flag==1)
+
+
+zz_rd_rto_pd_op3_sd=zz_rd_rto_pd_op1%>%
+  filter(X_id.cl %in% c("Snapdeal"))%>%
+
+  mutate(date_diff = X_id.sd_day-X_id.rd_day)%>%
+group_by(wkend_dt , date_diff)%>%
+  summarise(n=sum(dl_count))%>%
+  mutate(nx=n*date_diff)
+
+zz_rd_rto_pd_op3=zz_rd_rto_pd_op1%>%
+mutate(date_diff = X_id.sd_day-X_id.rd_day)%>%
+group_by(wkend_dt , date_diff)%>%
+  summarise(n=sum(dl_count))%>%
+  mutate(nx=n*date_diff)
+
+
+zz_rd_rto_pd_op4_sd=zz_rd_rto_pd_op3%>%
+  group_by(wkend_dt )%>%
+  summarise(sum=sum(nx)/sum(n))%>%
+  dcast(.~wkend_dt,value.var="sum")
+
+################# Cutomer Return #####################
+cl_zn_rep_10_pd=read.csv("~/R new1/cl_zn_rep_10_pd.csv")
+
+cust_ret_op1 = cl_zn_rep_10_pd%>%
+mutate(pd_day = as.integer(strftime(X_id.pd , format="%j")))  %>%
+    filter(pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+cust_ret_op1$wkend_dt = as.character(cust_ret_op1$wkend_dt)
+
+cust_ret_op1$wkend_dt= as.POSIXct(cust_ret_op1$wkend_dt , format="%j")
+
+cust_ret_op2 = cust_ret_op1%>%
+  filter(X_id.pt=="Pickup",
+         X_id.cl %in% c("Snapdeal RL"))%>%
+  mutate(day_diff = ifelse(X_id.fddMinusPd>2,3,X_id.fddMinusPd))%>%
+  group_by(wkend_dt , day_diff)%>%
+  summarise(sum= sum(dl_count))%>%
+  mutate(pct=sum*100/sum(sum))%>%
+  mutate(cum_sum=cumsum(pct))%>%
+  filter(day_diff<3)
+
+##cl_zn_rep_10_pd=read.csv("~/R new1/cl_zn_rep_10_pd.csv")
+
+cust_ret_op3_sd = cust_ret_op2%>%
+  dcast(day_diff~wkend_dt , value.var="cum_sum")
+
+######## Flipkart Closure Breach %, Loss Rate % ##########################
+closure_breach=read.csv("~/R new1/closure_breach.csv")
+loss_rate_op1 = closure_breach%>%  filter(X_id.pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+loss_rate_op1$wkend_dt = as.character(loss_rate_op1$wkend_dt)
+
+loss_rate_op1$wkend_dt = as.POSIXct(loss_rate_op1$wkend_dt , format="%j")
+
+clsr_brch_op1 = loss_rate_op1%>%
+  mutate(Del_diff=X_id.fdd_day-X_id.pd_day)%>%
+  mutate(Breach_flag = ifelse(X_id.zn=="A" & Del_diff>1,1,
+                              ifelse(X_id.zn=="B" & Del_diff>2 , 1,
+                                     ifelse(X_id.zn=="C" & Del_diff>2 , 1,
+                                            ifelse(X_id.zn=="D" & Del_diff>3 , 1,
+                                                   ifelse(X_id.zn=="E" & Del_diff>3 , 1,0
+                                                          
+                                                   ))))))
+clsr_brch_op1_sd=clsr_brch_op1%>%
+  filter(X_id.cl %in% c("Snapdeal"))
+
+clsr_brch_op2 = clsr_brch_op1_sd%>%
+  group_by(wkend_dt)%>%
+  summarise(sum_total=sum(dl_count))
+
+
+clsr_brch_op3 = clsr_brch_op1_sd%>%
+  filter(Breach_flag==1)%>%
+  group_by(wkend_dt)%>%
+  summarise(sum_breach=sum(dl_count))
+
+##clsr_brch_op3
+clsr_brch_op4 = inner_join( clsr_brch_op2, clsr_brch_op3 , by="wkend_dt")
+clsr_brch_op5_sd=clsr_brch_op4%>%
+mutate(breach_perc=sum_breach*100/sum_total)
+##clsr_brch_op3
+clsr_brch_op4 = inner_join( clsr_brch_op2, clsr_brch_op3 , by="wkend_dt")
+clsr_brch_op5=clsr_brch_op4%>%
+  mutate(breach_perc=sum_breach*100/sum_total)%>%
+  dcast(.~wkend_dt , value.var="breach_perc")
+
+####
+closure_breach=read.csv("~/R new1/closure_breach.csv")
+loss_rate_op1 = closure_breach%>%  filter(X_id.pd_day>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.pd_day -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+loss_rate_op1$wkend_dt = as.character(loss_rate_op1$wkend_dt)
+
+loss_rate_op1$wkend_dt = as.POSIXct(loss_rate_op1$wkend_dt , format="%j")
+
+loss_rate_op2_sd =loss_rate_op1 %>%
+  filter(X_id.cl %in% c("Snapdeal"))%>%
+  
+  group_by(wkend_dt , X_id.cs)%>%
+  summarise(sum=n())%>%
+  mutate (loss_rate = sum*100/sum(sum))%>%
+  filter(X_id.cs=="LOST")%>%
+  dcast(X_id.cs~wkend_dt,value.var="loss_rate")
+
+##################Snapdeal Zone Mix #####################
+cl_cs_pt_rep_13_10_3_zn = read.csv("~/R new1/cl-cs-pt-rep-13-10-3-zn.csv")
+
+zn_mix_op1 = cl_cs_pt_rep_13_10_3_zn%>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+zn_mix_op1$wkend_dt = as.character(zn_mix_op1$wkend_dt)
+
+zn_mix_op1$wkend_dt= as.POSIXct(zn_mix_op1$wkend_dt , format="%j")
+
+
+zn_mix_op2 = zn_mix_op1%>%
+  filter(X_id.dl_zn%in% c("A" , "B" , "C" , "D" , "E"),
+         X_id.cl %in% c("Snapdeal"))%>%
+  group_by(wkend_dt , X_id.dl_zn )%>%
+  summarise(zm=sum(dl_count))%>%
+  mutate(zn_pct = zm*100/sum(zm))%>%
+  mutate(cum_sum = cumsum(zn_pct))
+
+
+zn_mix_op3_sd = zn_mix_op2%>%
+  dcast(X_id.dl_zn~wkend_dt , value.var="zn_pct")
+######################### No of Attempt/Parcel ######################
+dct_sum=read.csv("~/R new1/dct_sum.csv")
+dct_sum_op1_sd = dct_sum%>%
+  filter(X_id.cl %in% c("Snapdeal"))%>%
+group_by(X_id.dl_week)%>%
+  summarise(sum_c = sum(dl_count) , sum_s=sum(dct_sum))%>%
+  
+  mutate(sum = sum_s/sum_c) %>%
+dcast(.~X_id.dl_week, value.var="sum")
+#############################################pin code##############
+week_pin_count=read.csv("~/R new1/cl-week-pin-count.csv")
+pin_code_mapping=read.csv("~/R new1/pin-code-mapping.csv")
+week_pin_count_op1=inner_join (week_pin_count , pin_code_mapping , by = c("X_id.pin" = "pin"))
+
+week_pin_count_op1=week_pin_count_op1%>%
+  filter(!(dispatch_center %in% c("NSZ" , "#NA"))) %>%
+   filter(X_id.cl %in% c("Snapdeal"))%>%
+  group_by(X_id.dl_week)%>%
+  summarise(pin_count=n_distinct(X_id.pin))%>%
+  dcast(.~X_id.dl_week,value.var="pin_count")
+
+
+
+```
+
+Key Metrics - Snapdeal
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_dl2_3),type="html"  , include.rownames=FALSE)
+```
+Delivery Efficiency :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_2_24),type="html"  , include.rownames=FALSE)
+```
+SDD Breach :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl23),type="html"  , include.rownames=FALSE)
+```
+NDD Breach :
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_zn_rep_10_pd_cl213),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+Return Rate:
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cl_rr_2_3),type="html"  , include.rownames=FALSE)
+```
+Rto Closure Breach %
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rd_rto_pd_op2_sd),type="html"  , include.rownames=FALSE)
+```
+Cycle
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zz_rd_rto_pd_op4_sd),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+Customer Return
+```{r ,echo=FALSE , results='asis'}
+print(xtable(cust_ret_op3_sd),type="html"  , include.rownames=FALSE)
+```
+Breach Closure %
+```{r ,echo=FALSE , results='asis'}
+print(xtable(clsr_brch_op5),type="html"  , include.rownames=FALSE)
+```
+
+Loss Rate
+```{r ,echo=FALSE , results='asis'}
+print(xtable(loss_rate_op2_sd),type="html"  , include.rownames=FALSE)
+```
+
+---
+
+Zone Mix
+```{r ,echo=FALSE , results='asis'}
+print(xtable(zn_mix_op3_sd),type="html"  , include.rownames=FALSE)
+```
+No of Attempt/Parcel
+```{r ,echo=FALSE , results='asis'}
+print(xtable(dct_sum_op1_sd),type="html"  , include.rownames=FALSE)
+```

@@ -1,0 +1,127 @@
+---
+title       : Operation Report
+subtitle    : Presented By:- BAM&R Team
+author      :
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight  # {highlight.js, prettify, highlight}
+hitheme     : none      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+biglogo     : logo_delhivery.jpg
+---
+```{r , echo=FALSE}  
+#Sys.setenv(JAVA_HOME='C:/Program Files/Java/jre7')
+#suppressPackageStartupMessages(library(rJava))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(xtable))
+suppressPackageStartupMessages(library(reshape))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+#suppressPackageStartupMessages(library(ReporteRs))
+#library('ReporteRs')
+library('googleVis')
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r , echo=FALSE, warning=FALSE}
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+```
+
+
+```{r , echo=FALSE, warning=FALSE}
+
+## Slide 3 - counts according to pt(Forward , Reverse , Cash)
+zz_rep_13_10_3 = read.csv("~/R new1/zz-rep-13-10-3.csv")
+zz_rep_13_10_3_op1 = zz_rep_13_10_3 %>%
+  mutate(day_3=strftime(strptime(X_id.dl_date ,  "%j") , "%a"),
+         date_3=strftime(strptime(X_id.dl_date ,  "%j") , "%D")
+  )
+
+slide_3_min_mon = zz_rep_13_10_3_op1 %>%
+  filter(day_3=="Sun") %>%
+  #group_by(dl_count) %>%
+  summarize(min_mon = min(X_id.dl_date))
+
+slide_3_min_mon = as.integer(slide_3_min_mon)
+
+zz_rep_13_10_3_op2 = zz_rep_13_10_3_op1 %>%
+  filter(X_id.dl_date>=slide_3_min_mon) %>%
+  mutate(wkend_dt = (((X_id.dl_date -slide_3_min_mon)%/%7)                     
+                     *7)
+         +as.integer(slide_3_min_mon)+6)
+
+
+zz_rep_13_10_3_op2$wkend_dt = as.character(zz_rep_13_10_3_op2$wkend_dt)
+
+zz_rep_13_10_3_op2$wkend_dt = as.POSIXct(zz_rep_13_10_3_op2$wkend_dt , format="%j")
+
+
+zz_rep_13_10_3_op3 = zz_rep_13_10_3_op2 %>%
+  filter(X_id.dl_pt %in% c("COD" , "Pre-paid" , "Pickup" , "Cash"))%>%
+  mutate(payment_type = ifelse(X_id.dl_pt %in% c("COD" , "Pre-paid") , "Forward",
+                               ifelse(X_id.dl_pt %in% c("Pickup") , "Reverse",
+                                      ifelse(X_id.dl_pt %in% c("Cash") , "Cash","NA"
+                                             
+                                      )))) %>%
+  group_by (wkend_dt , payment_type) %>%
+  summarise(Actual_Volume = sum(dl_count)) %>%
+  
+  arrange(wkend_dt)
+
+
+zz_rep_13_10_3_op3$wkend_dt = as.character(zz_rep_13_10_3_op3$wkend_dt)
+
+zz_rep_13_10_3_op4 = melt(zz_rep_13_10_3_op3 , id = c("wkend_dt" , "payment_type") )
+
+zz_rep_13_10_3_op5 = dcast(zz_rep_13_10_3_op4, wkend_dt~payment_type  , value.var="value")
+
+zz_rep_13_10_3_op5$wkend_dt = strftime(zz_rep_13_10_3_op5$wkend_dt,format="%D")
+
+zz_rep_13_10_3_op5 = zz_rep_13_10_3_op5%>%
+  rowwise()%>%
+  mutate(Actual_Total = sum(Cash,  Forward,  Reverse))
+slide_3_plan = read.csv("~/R new/slide-3-plan.csv")
+slide_3_plan$wkend_dt = as.character(slide_3_plan$wkend_dt)
+slide_3_plan = dplyr::rename(slide_3_plan ,  Plan_Total = Total)
+
+zz_rep_13_10_3_op6 = inner_join( slide_3_plan, zz_rep_13_10_3_op5 , by="wkend_dt")
+
+  zz_rep_13_10_3_op6 = zz_rep_13_10_3_op6%>%
+  mutate(Gap = Actual_Total-Plan_Total )
+
+zz_rep_13_10_3_op6 = zz_rep_13_10_3_op6%>%mutate(Gap_Perc = round((Gap/Plan_Total*100),1))
+
+zz_rep_13_10_3_op7 = melt(zz_rep_13_10_3_op6 , id = c("wkend_dt"))%>%
+  mutate(value=ifelse(value!="Gap_Perc" , as.character(round(value,0)) , paste(value , "%")))
+  
+zz_rep_13_10_3_op8 = zz_rep_13_10_3_op7%>%
+  dcast(variable~wkend_dt , value.var="value")
+
+x <- c("Plan_Total", "Plan_Forward", "Plan_Reverse"  , "Plan_Cash" , 
+       "Actual_Total"  , "Forward" , "Reverse"  , "Cash" , 
+       "Gap" , "Gap_Perc")
+
+zz_rep_13_10_3_op8 = zz_rep_13_10_3_op8 %>%
+  slice(match(x, variable))
+
+```
+
+  
+# Plan v/s Actual - Volumes
+```{r ,echo=FALSE , results='asis'}
+print(xtable(prettyNum(zz_rep_13_10_3_op8, big.interval = 3,big.mark=",")),type="html", include.rownames=FALSE)
+
+```
