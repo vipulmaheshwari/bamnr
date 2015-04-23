@@ -1,0 +1,213 @@
+---
+title: "R-MARKDOWN & GOOGLEVIS"
+author: "Nitesh Kumar"
+date: "Fri, March 26, 2015"
+output:
+  ioslides_presentation:
+    fig_height: 2.2
+    fig_width: 10.5
+    highlight: tango
+    incremental: yes
+    biglogo: logo_delhivery.jpg
+    transition: faster
+    widescreen: yes
+---
+
+# Delhivery
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+BREACH ANALYSIS(Part-1)
+- Line Graph
+```{r , echo=FALSE}  
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(googleVis))
+suppressPackageStartupMessages(library(ReporteRs))
+library('googleVis')
+library('ReporteRs')
+
+op<-options(gvis.plot.tag="chart")
+```
+
+```{r results ='asis', echo=FALSE }
+df=read.csv("C:/Users/abc/Desktop/R practice/Rmarkdown/R/Analysis.csv")
+df1 = df %>%
+  group_by(zn , Breach_flag) %>%
+  summarize(count = sum(count))%>%
+
+  select(zn, Breach_flag , count)
+
+df1 <- melt(df1, id = c("zn" ,"Breach_flag"))
+df2 = dcast(df1, zn~Breach_flag  , val.var="value")
+
+Line <- gvisLineChart(df2)
+plot(Line)
+```
+- Bar Graph
+```{r results ='asis', echo=FALSE }
+Bar <- gvisBarChart(df2)
+plot(Bar)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+BREACH ANALYSIS(Part-2)
+- Column Graph
+```{r results ='asis', echo=FALSE }
+Column <- gvisColumnChart(df2)
+plot(Column)
+```
+- Area Graph
+```{r results ='asis', echo=FALSE }
+Area <- gvisAreaChart(df2)
+plot(Area)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+BREACH ANALYSIS(Part-3)
+- Stepped Area chart
+```{r results ='asis', echo=FALSE }
+SteppedArea <- gvisSteppedAreaChart(df2, xvar="zn", 
+                                    yvar=c(0, 1),
+                                    options=list(isStacked=TRUE))
+plot(SteppedArea)
+```
+- Combo Chart
+```{r results ='asis', echo=FALSE }
+Combo <- gvisComboChart(df2, xvar="zn",
+                        yvar=c(0, 1),
+                        options=list(seriesType="bars",
+                                     series='{1: {type:"line"}}'))
+plot(Combo)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+BREACH ANALYSIS(Part-4)
+- Customizing Lines
+```{r results ='asis', echo=FALSE }
+Dashed <-  gvisLineChart(df2, xvar="zn", yvar=c(0, 1),
+                        options=list(
+                          series="[{color:'green', targetAxisIndex: 0, 
+                          lineWidth: 1, lineDashStyle: [2, 2, 20, 2, 20, 2]}, 
+                          {color: 'blue',targetAxisIndex: 1, 
+                          lineWidth: 2, lineDashStyle: [4, 1]}]",
+                          vAxes="[{title:'Breach_zero'}, {title:'Breach_one'}]"
+                        ))
+plot(Dashed)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+BREACH ANALYSIS(Part-5)
+- FLY Customisation
+```{r results ='asis', echo=FALSE }
+Line4 <-  gvisLineChart(df2, "zn", c(0,1),
+                        options=list(gvis.editor="Edit me!"))
+plot(Line4)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+BREACH ANALYSIS(Part-6)
+- Chart With Many Options Set
+```{r results ='asis', echo=FALSE }
+Line3 <-  gvisLineChart(df2, xvar="zn", yvar=c(0,1),
+                        options=list(
+                          title="See Many OPtions Set Chart",
+                          titleTextStyle="{color:'red', 
+                                           fontName:'Courier', 
+                                           fontSize:16}",                         
+                          backgroundColor="#D3D3D3",                          
+                          vAxis="{gridlines:{color:'red', count:3}}",
+                          hAxis="{title:'zn', titleTextStyle:{color:'blue'}}",
+                          series="[{color:'green', targetAxisIndex: 0}, 
+                                   {color: 'orange',targetAxisIndex:1}]",
+                          vAxes="[{title:'Breach_Zero'}, {title:'Breach_One'}]",
+                          legend="bottom",
+                          curveType="function",
+                          width=500,
+                          height=300                         
+                        ))
+plot(Line3)
+```
+- Pie Chart
+```{r results ='asis', echo=FALSE }
+Pie <- gvisPieChart(df2)
+plot(Pie)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+BREACH ANALYSIS(Part-7) 
+- Table with pages
+```{r results ='asis', echo=FALSE }
+Table <- gvisTable(df2, options=list(page='enable'))
+plot(Table)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+BREACH ANALYSIS(Part-8)
+- Merging Charts
+
+```{r results ='asis', echo=FALSE }
+G <- gvisTable(df2, options=list(width=220, height=300))
+T <- gvisLineChart(df2, options=list(width=620, height=300))
+
+GT <- gvisMerge(G,T, horizontal=TRUE) 
+plot(GT)
+```
+
+```{r results ='asis', echo=FALSE }
+G <- gvisTable(df2, options=list(width=220, height=300))
+T <- gvisBarChart(df2, options=list(width=620, height=300))
+
+GT <- gvisMerge(G,T, horizontal=TRUE) 
+plot(GT)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+CENTRES
+- Tree Map
+```{r results ='asis', echo=FALSE }
+tr <- read.csv("C:/Users/abc/Desktop/R practice/Rmarkdown/R/M2.csv")
+Tree <- gvisTreeMap(tr,  
+                    "Region", "Parent", 
+                    "Val", "Fac", 
+                    options=list(fontSize=16))
+plot(Tree)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+Google Mapping
+- Map
+```{r results ='asis', echo=FALSE }
+dff=read.csv("C:/Users/abc/Desktop/R practice/Rmarkdown/R/M1.csv")
+dff$LatLong <- paste(dff$Lat, dff$Long,sep=":-")
+Map <- gvisMap(Andrew, "LatLong" , "Tip", 
+                     options=list(showTip=TRUE, 
+                                  showLine=TRUE, 
+                                  enableScrollWheel=TRUE,
+                                  mapType='terrain', 
+                                  useMapTypeControl=TRUE))
+plot(Map)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+Org Chart
+```{r results ='asis', echo=FALSE }
+dff=read.csv("C:/Users/abc/Desktop/R practice/Rmarkdown/R/M2.csv")
+Org <- gvisOrgChart(dff, idvar = "Region", parentvar = "Parent", tipvar = "Val",
+                    options=list(size='small', allowCollapse=TRUE))
+plot(Org)
+```
+
+## ![Image](C:/Users/abc/Desktop/R practice/Rmarkdown/log.png)
+Table with cell colored
+
+```{r, results='asis', warning=FALSE, message=FALSE, echo=FALSE}
+ir <- read.csv("C:/Users/abc/Desktop/R practice/Rmarkdown/R/M.csv")
+data(ir)
+irFT = FlexTable( ir )
+vars <- c("zn", "X0", "X1")
+for (i in vars) {
+  irFT[ir[, i] <= 385, i] = cellProperties( background.color = "orange" )
+  irFT[ir[, i] > 385, i] = cellProperties( background.color = "#81DAF5" )
+  irFT[ir[, i] == "A", i] = cellProperties( background.color = "red" )
+}
+cat(as.html(irFT))
+```

@@ -1,0 +1,22 @@
+Region,Parent,Val
+Delhi & GGN,,1
+Delhi_S_PC (Delhi),Delhi & GGN,2
+GGN_Gateway (Haryana),Delhi & GGN,3
+Del_Okhla_PC (Delhi),Delhi & GGN,4
+Kirtinagar_PC (Delhi),Delhi & GGN,5
+Delhi_Hub (Delhi),Delhi_S_PC (Delhi),7
+Janakpuri (Delhi),Delhi_S_PC (Delhi),8
+Meerut (Uttar Pradesh),Delhi_S_PC (Delhi),9
+Delhi_Mayapuri_PC (Delhi),Delhi_S_PC (Delhi),10
+Delhi_Kishangarh_DPC (Delhi),Delhi_S_PC (Delhi),11
+Ludhiana_Dugri (Punjab),Delhi_S_PC (Delhi),12
+Delhi_Rohini_DPC (Delhi),Delhi_S_PC (Delhi),13
+Noida_Sec 02_DPC (Uttar Pradesh),Delhi_S_PC (Delhi),14
+GGN_DPC (Haryana),Delhi_S_PC (Delhi),15
+GZB_Mohan_Nagar_DPC (Uttar Pradesh),Delhi_S_PC (Delhi),16
+GGN_DPC (Haryana),GGN_Gateway (Haryana),18
+Delhi_Patparganj_DPC (Delhi),Del_Okhla_PC (Delhi),20
+FBD_Balabhgarh_DPC (Haryana),Del_Okhla_PC (Delhi),21
+Delhi_Jhandewalan DPC (Delhi),Del_Okhla_PC (Delhi),22
+Delhi_Tuglakabad DPC (Delhi),Del_Okhla_PC (Delhi),23
+Kirtinagar_PC (Delhi),Kirti nagar_pc (Delhi),25

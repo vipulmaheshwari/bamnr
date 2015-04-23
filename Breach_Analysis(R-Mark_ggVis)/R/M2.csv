@@ -1,0 +1,12 @@
+,Region,Parent,Val,Fac
+1,GGN & Delhi,NA,10,2
+2,Delhi_S_PC (Delhi),GGN & Delhi,2,4
+3,GGN_Gateway (Haryana),GGN & Delhi,99,11
+4,Del_Okhla_PC (Delhi),GGN & Delhi,10,8
+5,Delhi_Hub (Delhi),Delhi_S_PC (Delhi),71,2
+6,Janakpuri (Delhi),Delhi_S_PC (Delhi),89,3
+7,Delhi_Mayapuri_PC (Delhi),Delhi_S_PC (Delhi),58,10
+8,GGN_DPC (Haryana),GGN_Gateway (Haryana),2,9
+9,GGN_Gateway,GGN_Gateway (Haryana),38,11
+10,Delhi_Jhandewalan DPC (Delhi),Del_Okhla_PC (Delhi),5,1
+11,Delhi_Tuglakabad DPC (Delhi),Del_Okhla_PC (Delhi),48,11

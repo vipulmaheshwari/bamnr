@@ -1,0 +1,12 @@
+Region,Parent,Val,Fac
+Global,<NA>,10,2
+America,Global,2,4
+Europe,Global,99,11
+Asia,Global,10,8
+France,Europe,71,2
+Sweden,Europe,89,3
+Germany,Europe,58,10
+Mexico,America,2,9
+USA,America,38,11
+China,Asia,5,1
+Japan,Asia,48,11
