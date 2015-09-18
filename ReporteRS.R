@@ -1,5 +1,5 @@
 ##################### Including All Required Packages ################################
-suppressPackageStartupMessages(library(dplyr))
+
 suppressPackageStartupMessages(library(xtable))
 suppressPackageStartupMessages(library(reshape))
 suppressPackageStartupMessages(library(reshape2))
